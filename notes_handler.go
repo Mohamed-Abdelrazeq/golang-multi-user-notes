@@ -8,18 +8,21 @@ import (
 )
 
 func (dataSource *DataSource) getAllNotes(c *fiber.Ctx) error {
-	var res string
-	var todos []string
+	var id uuid.UUID
+	var createdAt time.Time
+	var updatedAt time.Time
+	var content string
+	var todos []Note
 
-	rows, err := dataSource.Query("SELECT id FROM notes")
+	rows, err := dataSource.Query("SELECT * FROM notes")
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(fiber.Map{"message": err})
 	}
 	defer rows.Close()
 
 	for rows.Next() {
-		rows.Scan(&res)
-		todos = append(todos, res)
+		rows.Scan(&id, &createdAt, &updatedAt, &content)
+		todos = append(todos, Note{id, createdAt, updatedAt, content})
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"notes": todos})

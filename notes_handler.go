@@ -2,12 +2,19 @@ package main
 
 import "github.com/gofiber/fiber/v2"
 
-type Note struct {
-	Content string `json:"content"`
-}
-
 func getAllNotes(c *fiber.Ctx) error {
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{"notes": ""})
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{"notes": []Note{
+		{
+			Content: "Note #1",
+		},
+		{
+			Content: "Note #2",
+		},
+		{
+			Content: "Note #3",
+		},
+	}})
 }
 
 func addNote(c *fiber.Ctx) error {

@@ -9,6 +9,9 @@ func main() {
 	app := fiber.New()
 	app.Use(logger.New())
 
+	app.Get("api/notes", getAllNotes)
+	app.Post("api/notes", addNote)
+
 	app.Get("/api/health", func(c *fiber.Ctx) error {
 		return c.Status(200).JSON(fiber.Map{
 			"status":  "success",

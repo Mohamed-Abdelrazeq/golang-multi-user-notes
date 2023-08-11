@@ -9,14 +9,10 @@ func main() {
 	app := fiber.New()
 	app.Use(logger.New())
 
-	app.Get("api/notes", getAllNotes)
-	app.Post("api/notes", addNote)
-
-	app.Get("/api/health", func(c *fiber.Ctx) error {
-		return c.Status(200).JSON(fiber.Map{
-			"status":  "success",
-			"message": "Welcome to Golang, Fiber, and Postgres",
-		})
+	app.Route("/api", func(router fiber.Router) {
+		router.Get("/notes", getAllNotes)
+		router.Post("/notes", addNote)
+		router.Get("/health", checkHealth)
 	})
 
 	app.Listen("127.0.0.1:8080")

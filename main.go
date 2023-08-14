@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"log"
 
+	"github.com/Fiber-CRUD/handlers"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	_ "github.com/lib/pq"
@@ -18,12 +19,12 @@ func main() {
 		log.Fatal(err)
 	}
 
-	dataSource := DataSource{database}
+	dataSource := handlers.DataSource{DB: database}
 
 	app.Route("/api", func(router fiber.Router) {
-		router.Get("/notes", dataSource.getAllNotes)
-		router.Post("/notes", dataSource.addNote)
-		router.Get("/health", checkHealth)
+		router.Get("/notes", dataSource.GetAllNotes)
+		router.Post("/notes", dataSource.AddNote)
+		router.Get("/health", handlers.CheckHealth)
 	})
 
 	log.Fatal(app.Listen("127.0.0.1:8080"))

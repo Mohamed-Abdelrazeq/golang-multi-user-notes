@@ -14,7 +14,10 @@ func main() {
 	app := fiber.New()
 	app.Use(logger.New())
 
-	database, err := sql.Open("postgres", "postgres://postgres:5024@localhost:5432/Fiber-CRUD?sslmode=disable")
+	database, err := sql.Open(
+		"postgres",
+		"postgres://postgres:5024@localhost:5432/Fiber-CRUD?sslmode=disable",
+	)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -26,6 +29,7 @@ func main() {
 		router.Post("/notes", dataSource.AddNote)
 		router.Get("/health", handlers.CheckHealth)
 	})
-
-	log.Fatal(app.Listen("127.0.0.1:8080"))
+	log.Fatal(
+		app.Listen("127.0.0.1:8080"),
+	)
 }

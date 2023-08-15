@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	// "log"
 	"log"
 
 	"github.com/Fiber-CRUD/queries"

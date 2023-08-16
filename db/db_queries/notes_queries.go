@@ -1,27 +1,14 @@
-package queries
+package db_queries
 
 import (
-	"database/sql"
-
+	"github.com/Fiber-CRUD/db/db_connection"
 	"github.com/Fiber-CRUD/models"
 )
 
-func openDB() (*sql.DB, error) {
-	db, err := sql.Open(
-		"postgres",
-		"postgres://postgres:5024@localhost:5432/Fiber-CRUD?sslmode=disable",
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	return db, nil
-}
-
-func GetAllNotes() ([]models.Note, error) {
+func GetAllNotes() (*[]models.Note, error) {
 	notes := []models.Note{}
 
-	db, err := openDB()
+	db, err := db_connection.OpenDB()
 	if err != nil {
 		return nil, err
 	}
@@ -43,5 +30,5 @@ func GetAllNotes() ([]models.Note, error) {
 		notes = append(notes, *note)
 	}
 
-	return notes, nil
+	return &notes, nil
 }

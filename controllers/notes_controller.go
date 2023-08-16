@@ -4,13 +4,13 @@ import (
 	// "log"
 	"log"
 
-	"github.com/Fiber-CRUD/queries"
+	"github.com/Fiber-CRUD/db/db_queries"
 	"github.com/gofiber/fiber/v2"
 )
 
 func GetAllNotes(c *fiber.Ctx) error {
 
-	notes, err := queries.GetAllNotes()
+	notes, err := db_queries.GetAllNotes()
 	if err != nil {
 		log.Fatal(err)
 	}

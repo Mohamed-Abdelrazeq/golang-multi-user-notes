@@ -1,16 +1,14 @@
-package controllers
+package handler
 
 import (
-	// "log"
 	"log"
 
-	"github.com/Fiber-CRUD/db/db_queries"
 	"github.com/gofiber/fiber/v2"
 )
 
-func GetAllNotes(c *fiber.Ctx) error {
+func (dataSource *DataSource) GetAllNotes(c *fiber.Ctx) error {
 
-	notes, err := db_queries.GetAllNotes()
+	notes, err := dataSource.QueryAllNotes()
 	if err != nil {
 		log.Fatal(err)
 	}

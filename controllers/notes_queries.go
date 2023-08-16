@@ -1,19 +1,13 @@
-package db_queries
+package handler
 
 import (
-	"github.com/Fiber-CRUD/db/db_connection"
 	"github.com/Fiber-CRUD/models"
 )
 
-func GetAllNotes() (*[]models.Note, error) {
+func (dataSource *DataSource) QueryAllNotes() (*[]models.Note, error) {
 	notes := []models.Note{}
 
-	db, err := db_connection.OpenDB()
-	if err != nil {
-		return nil, err
-	}
-
-	rows, err := db.Query("SELECT * FROM notes")
+	rows, err := dataSource.Query("SELECT * FROM notes")
 	if err != nil {
 		return nil, err
 	}

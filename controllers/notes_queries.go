@@ -1,7 +1,10 @@
 package handler
 
 import (
+	"errors"
+
 	"github.com/Fiber-CRUD/models"
+	"github.com/google/uuid"
 )
 
 func (dataSource *DataSource) queryAllNotes() (*[]models.Note, error) {
@@ -37,4 +40,21 @@ func (dataSource *DataSource) excuteInsertNote(note models.Note) error {
 
 	return err
 
+}
+
+func (DataSource *DataSource) excuteDeleteNote(id *uuid.UUID) error {
+	msg, err := DataSource.Exec("DELETE FROM notes WHERE id = $1",
+		&id,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	count, _ := msg.RowsAffected()
+	if count == 0 {
+		return errors.New("note doesn't exist")
+	}
+
+	return nil
 }

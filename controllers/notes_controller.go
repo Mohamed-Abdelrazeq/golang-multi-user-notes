@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"log"
 	"time"
 
@@ -30,14 +29,12 @@ func (dataSource *DataSource) AddNote(c *fiber.Ctx) error {
 		UpdatedAt: time.Now(),
 	}
 
-	// TODO: FIND A BETTER WAY TO MARSHAL JSON
-	if err := c.BodyParser(&note); err != nil {
-		c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
-			"message": err,
+	// TODO: FIND A BETTER WAY TO VALIDATE MODELS
+	if err := c.BodyParser(&note); err != nil || note.Content == "" {
+		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
+			"message": "Content can't be empty",
 		})
 	}
-
-	fmt.Println(len(note.Content))
 
 	err := dataSource.excuteInsertNote(note)
 	if err != nil {
@@ -49,5 +46,30 @@ func (dataSource *DataSource) AddNote(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusCreated).JSON(&fiber.Map{
 		"message": "Note Created Successfully",
 		"note":    note,
+	})
+}
+
+func (DataSource *DataSource) DeleteNote(c *fiber.Ctx) error {
+	type Params struct {
+		Id uuid.UUID `json:"id"`
+	}
+
+	id := new(Params)
+
+	if err := c.BodyParser(&id); err != nil {
+		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
+			"message": err.Error(),
+		})
+	}
+
+	err := DataSource.excuteDeleteNote(&id.Id)
+	if err != nil {
+		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
+			"message": err.Error(),
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(&fiber.Map{
+		"message": "Note DELETED Successfully",
 	})
 }

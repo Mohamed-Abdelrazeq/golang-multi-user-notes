@@ -1,8 +1,6 @@
 package main
 
 import (
-	"database/sql"
-	"fmt"
 	"log"
 	"time"
 
@@ -23,15 +21,13 @@ func main() {
 		SigningKey: jwtware.SigningKey{Key: []byte("secret")},
 	}))
 	// DB INIT
-	dataSource, err := openDB()
+	dataSource, err := handler.OpenDB()
 	if err != nil {
 		log.Fatal("ERROR CONNECTING TO DB")
 	}
 
 	app.Route("/authenticate", func(router fiber.Router) {
 		router.Post("/login", login)
-		router.Get("/", accessible)
-		router.Get("/restricted", restricted)
 	})
 
 	app.Route("/api", func(router fiber.Router) {
@@ -49,30 +45,16 @@ func main() {
 	log.Fatal(app.Listen("127.0.0.1:8080"))
 }
 
-func openDB() (*handler.DataSource, error) {
-	conn, err := sql.Open(
-		"postgres",
-		"postgres://postgres:5024@localhost:5432/Fiber-CRUD?sslmode=disable",
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	return &handler.DataSource{DB: conn}, nil
-}
-
 func login(c *fiber.Ctx) error {
 	println("LOGIN")
 	user := c.FormValue("user")
 	pass := c.FormValue("pass")
 
-	fmt.Println("1")
 	// Throws Unauthorized error
 	if user != "john" || pass != "doe" {
 		return c.SendStatus(fiber.StatusUnauthorized)
 	}
 
-	fmt.Println("2")
 	// Create the Claims
 	claims := jwt.MapClaims{
 		"name":  "John Doe",
@@ -80,7 +62,6 @@ func login(c *fiber.Ctx) error {
 		"exp":   time.Now().Add(time.Hour * 72).Unix(),
 	}
 
-	fmt.Println("3")
 	// Create token
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
@@ -91,17 +72,4 @@ func login(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(fiber.Map{"token": t})
-}
-
-func accessible(c *fiber.Ctx) error {
-	fmt.Println("ACC")
-	return c.SendString("Accessible")
-}
-
-func restricted(c *fiber.Ctx) error {
-	fmt.Println("RES")
-	user := c.Locals("user").(*jwt.Token)
-	claims := user.Claims.(jwt.MapClaims)
-	name := claims["name"].(string)
-	return c.SendString("Welcome " + name)
 }

@@ -57,7 +57,7 @@ func (DataSource *DataSource) DeleteNote(c *fiber.Ctx) error {
 
 	id := new(selectParams)
 
-	if err := c.BodyParser(&id); err != nil {
+	if err := c.ParamsParser(id); err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err.Error(),
 		})
@@ -95,5 +95,27 @@ func (DataSource *DataSource) GetNoteById(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(&fiber.Map{
 		"message": "note is found",
 		"note":    &note,
+	})
+}
+
+func (DataSource *DataSource) UpdateNote(c *fiber.Ctx) error {
+
+	id := new(selectParams)
+
+	if err := c.ParamsParser(&id); err != nil {
+		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
+			"message": err.Error(),
+		})
+	}
+
+	err := DataSource.excuteDeleteNote(&id.Id)
+	if err != nil {
+		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
+			"message": err.Error(),
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(&fiber.Map{
+		"message": "Note DELETED Successfully",
 	})
 }

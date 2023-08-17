@@ -11,7 +11,6 @@ func (dataSource *DataSource) QueryAllNotes() (*[]models.Note, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
 
 	for rows.Next() {
 		note := new(models.Note)

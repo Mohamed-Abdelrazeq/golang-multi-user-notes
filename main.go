@@ -21,7 +21,7 @@ func main() {
 
 	app.Route("/api", func(router fiber.Router) {
 		router.Get("/notes", dataSource.GetAllNotes)
-		// router.Post("/notes", controllers.AddNote)
+		router.Post("/notes", dataSource.AddNote)
 		router.Get("/health", handler.CheckHealth)
 	})
 	log.Fatal(

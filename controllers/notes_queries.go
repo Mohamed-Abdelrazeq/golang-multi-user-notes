@@ -14,6 +14,7 @@ func (dataSource *DataSource) queryAllNotes() (*[]models.Note, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	for rows.Next() {
 		note := new(models.Note)
@@ -63,21 +64,22 @@ func (DataSource *DataSource) excuteGetNoteById(id *uuid.UUID) (*models.Note, er
 	rows, err := DataSource.Query("SELECT * FROM notes WHERE id = $1 LIMIT 1",
 		&id,
 	)
-
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
+
+	if !rows.Next() {
+		return nil, errors.New("note doesn't exist")
+	}
 
 	note := new(models.Note)
-
-	for rows.Next() {
-		rows.Scan(
-			&note.Id,
-			&note.CreatedAt,
-			&note.UpdatedAt,
-			&note.Content,
-		)
-	}
+	rows.Scan(
+		&note.Id,
+		&note.CreatedAt,
+		&note.UpdatedAt,
+		&note.Content,
+	)
 
 	return note, nil
 }

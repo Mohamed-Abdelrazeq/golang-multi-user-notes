@@ -12,7 +12,7 @@ import (
 
 func (dataSource *DataSource) GetAllNotes(c *fiber.Ctx) error {
 
-	notes, err := dataSource.QueryAllNotes()
+	notes, err := dataSource.queryAllNotes()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -23,22 +23,23 @@ func (dataSource *DataSource) GetAllNotes(c *fiber.Ctx) error {
 }
 
 func (dataSource *DataSource) AddNote(c *fiber.Ctx) error {
-	note := new(models.Note)
 
-	if err := c.BodyParser(note); err != nil {
+	note := models.Note{
+		Id:        uuid.New(),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+
+	// TODO: FIND A BETTER WAY TO MARSHAL JSON
+	if err := c.BodyParser(&note); err != nil {
 		c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err,
 		})
 	}
 
-	fmt.Println(note.Content)
+	fmt.Println(len(note.Content))
 
-	_, err := dataSource.Exec("INSERT INTO notes VALUES ($1, $2, $3, $4)",
-		uuid.New(),
-		time.Now(),
-		time.Now(),
-		&note.Content,
-	)
+	err := dataSource.excuteInsertNote(note)
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err,
@@ -47,5 +48,6 @@ func (dataSource *DataSource) AddNote(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusCreated).JSON(&fiber.Map{
 		"message": "Note Created Successfully",
+		"note":    note,
 	})
 }

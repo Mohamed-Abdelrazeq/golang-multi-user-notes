@@ -25,7 +25,7 @@ func (dataSource *DataSource) GetAllNotes(c *fiber.Ctx) error {
 	})
 }
 
-func (dataSource *DataSource) AddNote(c *fiber.Ctx) error {
+func (dataSource *DataSource) CreateNote(c *fiber.Ctx) error {
 
 	note := models.Note{
 		Id:        uuid.New(),
@@ -40,7 +40,7 @@ func (dataSource *DataSource) AddNote(c *fiber.Ctx) error {
 		})
 	}
 
-	err := dataSource.excuteInsertNote(note)
+	err := dataSource.executeInsertNote(note)
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err,
@@ -53,7 +53,7 @@ func (dataSource *DataSource) AddNote(c *fiber.Ctx) error {
 	})
 }
 
-func (DataSource *DataSource) DeleteNote(c *fiber.Ctx) error {
+func (dataSource *DataSource) DeleteNote(c *fiber.Ctx) error {
 
 	id := new(selectParams)
 
@@ -63,7 +63,7 @@ func (DataSource *DataSource) DeleteNote(c *fiber.Ctx) error {
 		})
 	}
 
-	err := DataSource.excuteDeleteNote(&id.Id)
+	err := dataSource.executeDeleteNote(&id.Id)
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err.Error(),
@@ -75,7 +75,7 @@ func (DataSource *DataSource) DeleteNote(c *fiber.Ctx) error {
 	})
 }
 
-func (DataSource *DataSource) GetNoteById(c *fiber.Ctx) error {
+func (dataSource *DataSource) GetNoteById(c *fiber.Ctx) error {
 
 	id := new(selectParams)
 
@@ -85,7 +85,7 @@ func (DataSource *DataSource) GetNoteById(c *fiber.Ctx) error {
 		})
 	}
 
-	note, err := DataSource.excuteGetNoteById(&id.Id)
+	note, err := dataSource.queryGetNoteById(&id.Id)
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err.Error(),
@@ -98,17 +98,20 @@ func (DataSource *DataSource) GetNoteById(c *fiber.Ctx) error {
 	})
 }
 
-func (DataSource *DataSource) UpdateNote(c *fiber.Ctx) error {
+func (dataSource *DataSource) UpdateNote(c *fiber.Ctx) error {
+	// TODO: PARSE ID FROM PARAMS
+	note := models.Note{
+		UpdatedAt: time.Now(),
+	}
 
-	id := new(selectParams)
-
-	if err := c.ParamsParser(&id); err != nil {
+	// TODO: FIND A BETTER WAY TO VALIDATE MODELS
+	if err := c.BodyParser(&note); err != nil || note.Content == "" {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
-			"message": err.Error(),
+			"message": "Content can't be empty",
 		})
 	}
 
-	err := DataSource.excuteDeleteNote(&id.Id)
+	err := dataSource.executeUpdateNote(note)
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err.Error(),
@@ -116,6 +119,6 @@ func (DataSource *DataSource) UpdateNote(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).JSON(&fiber.Map{
-		"message": "Note DELETED Successfully",
+		"message": "Note UPDATED Successfully",
 	})
 }

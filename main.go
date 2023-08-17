@@ -22,7 +22,8 @@ func main() {
 	app.Route("/api", func(router fiber.Router) {
 		router.Get("/notes/:id", dataSource.GetNoteById)
 		router.Delete("/notes/:id", dataSource.DeleteNote)
-		router.Post("/notes", dataSource.AddNote)
+		router.Post("/notes", dataSource.CreateNote)
+		router.Patch("/notes", dataSource.UpdateNote)
 		router.Get("/notes", dataSource.GetAllNotes)
 		router.Get("/health", handler.CheckHealth)
 	})

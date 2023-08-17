@@ -30,7 +30,7 @@ func (dataSource *DataSource) queryAllNotes() (*[]models.Note, error) {
 	return &notes, nil
 }
 
-func (dataSource *DataSource) excuteInsertNote(note models.Note) error {
+func (dataSource *DataSource) executeInsertNote(note models.Note) error {
 
 	_, err := dataSource.Exec("INSERT INTO notes VALUES ($1, $2, $3, $4)",
 		&note.Id,
@@ -40,11 +40,10 @@ func (dataSource *DataSource) excuteInsertNote(note models.Note) error {
 	)
 
 	return err
-
 }
 
-func (DataSource *DataSource) excuteDeleteNote(id *uuid.UUID) error {
-	msg, err := DataSource.Exec("DELETE FROM notes WHERE id = $1",
+func (dataSource *DataSource) executeDeleteNote(id *uuid.UUID) error {
+	msg, err := dataSource.Exec("DELETE FROM notes WHERE id = $1",
 		&id,
 	)
 
@@ -60,8 +59,8 @@ func (DataSource *DataSource) excuteDeleteNote(id *uuid.UUID) error {
 	return nil
 }
 
-func (DataSource *DataSource) excuteGetNoteById(id *uuid.UUID) (*models.Note, error) {
-	rows, err := DataSource.Query("SELECT * FROM notes WHERE id = $1 LIMIT 1",
+func (dataSource *DataSource) queryGetNoteById(id *uuid.UUID) (*models.Note, error) {
+	rows, err := dataSource.Query("SELECT * FROM notes WHERE id = $1 LIMIT 1",
 		&id,
 	)
 	if err != nil {
@@ -82,4 +81,19 @@ func (DataSource *DataSource) excuteGetNoteById(id *uuid.UUID) (*models.Note, er
 	)
 
 	return note, nil
+}
+
+func (dataSource *DataSource) executeUpdateNote(note models.Note) error {
+	msg, err := dataSource.Exec("UPDATE notes SET content=$2, updated_at=$3 WHERE id=$1",
+		&note.Id,
+		&note.Content,
+		&note.UpdatedAt,
+	)
+
+	count, _ := msg.RowsAffected()
+	if count == 0 {
+		return errors.New("note doesn't exist")
+	}
+
+	return err
 }

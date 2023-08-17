@@ -20,6 +20,7 @@ func main() {
 	}
 
 	app.Route("/api", func(router fiber.Router) {
+		router.Get("/notes/:id", dataSource.GetNoteById)
 		router.Get("/notes", dataSource.GetAllNotes)
 		router.Post("/notes", dataSource.AddNote)
 		router.Delete("/notes", dataSource.DeleteNote)

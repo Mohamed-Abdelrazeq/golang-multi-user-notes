@@ -58,3 +58,26 @@ func (DataSource *DataSource) excuteDeleteNote(id *uuid.UUID) error {
 
 	return nil
 }
+
+func (DataSource *DataSource) excuteGetNoteById(id *uuid.UUID) (*models.Note, error) {
+	rows, err := DataSource.Query("SELECT * FROM notes WHERE id = $1 LIMIT 1",
+		&id,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	note := new(models.Note)
+
+	for rows.Next() {
+		rows.Scan(
+			&note.Id,
+			&note.CreatedAt,
+			&note.UpdatedAt,
+			&note.Content,
+		)
+	}
+
+	return note, nil
+}

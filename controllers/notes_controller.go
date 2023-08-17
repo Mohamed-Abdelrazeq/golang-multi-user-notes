@@ -9,6 +9,10 @@ import (
 	"github.com/google/uuid"
 )
 
+type selectParams struct {
+	Id uuid.UUID `json:"id" params:"id"`
+}
+
 func (dataSource *DataSource) GetAllNotes(c *fiber.Ctx) error {
 
 	notes, err := dataSource.queryAllNotes()
@@ -50,11 +54,8 @@ func (dataSource *DataSource) AddNote(c *fiber.Ctx) error {
 }
 
 func (DataSource *DataSource) DeleteNote(c *fiber.Ctx) error {
-	type Params struct {
-		Id uuid.UUID `json:"id"`
-	}
 
-	id := new(Params)
+	id := new(selectParams)
 
 	if err := c.BodyParser(&id); err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
@@ -71,5 +72,28 @@ func (DataSource *DataSource) DeleteNote(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusOK).JSON(&fiber.Map{
 		"message": "Note DELETED Successfully",
+	})
+}
+
+func (DataSource *DataSource) GetNoteById(c *fiber.Ctx) error {
+
+	id := new(selectParams)
+
+	if err := c.ParamsParser(id); err != nil {
+		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
+			"message": err.Error(),
+		})
+	}
+
+	note, err := DataSource.excuteGetNoteById(&id.Id)
+	if err != nil {
+		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
+			"message": err.Error(),
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(&fiber.Map{
+		"message": "note is found",
+		"note":    &note,
 	})
 }

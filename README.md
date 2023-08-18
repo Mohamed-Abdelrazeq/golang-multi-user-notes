@@ -1,5 +1,5 @@
 # Multi-User-Notes-Go-Fiber
- ## description
+ ## Description
  in this app and developing a multi user not app with any user can 
  - Create an account
  - CRUD notes

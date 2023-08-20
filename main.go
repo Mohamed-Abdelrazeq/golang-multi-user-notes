@@ -25,7 +25,7 @@ func main() {
 	}
 
 	app.Route("/authenticate", func(router fiber.Router) {
-		router.Post("/login", handler.Login)
+		router.Post("/login", handler.AuthenticateUser)
 	})
 
 	app.Route("/api", func(router fiber.Router) {

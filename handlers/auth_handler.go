@@ -4,19 +4,15 @@ import (
 	"time"
 
 	"github.com/Fiber-CRUD/db"
+	"github.com/Fiber-CRUD/types/forms"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
 
-type LoginForm struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
+func AuthenticateUser(c *fiber.Ctx) error {
 
-func Login(c *fiber.Ctx) error {
-
-	loginForm := new(LoginForm)
+	loginForm := new(forms.Login)
 
 	if err := c.BodyParser(&loginForm); err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(&fiber.Map{
@@ -24,24 +20,17 @@ func Login(c *fiber.Ctx) error {
 		})
 	}
 
-	password, err := hashPassword(loginForm.Password)
-	if err != nil {
+	if err := hashPassword(&loginForm.Password); err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(&fiber.Map{
 			"message": "error hashing the password",
 		})
 	}
 
-	loginForm.Password = password
-
-	rows, err := db.DBConnection.Query("SELECT * FROM users WHERE email = $1 AND password = $2")
+	_, err := db.AuthenticateUser(*loginForm)
 	if err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(&fiber.Map{
 			"message": "user is not found",
 		})
-	}
-
-	for rows.Next() {
-
 	}
 
 	// Create the Claims
@@ -63,7 +52,12 @@ func Login(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{"token": t})
 }
 
-func hashPassword(password string) (string, error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
-	return string(bytes), err
+func hashPassword(password *string) error {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(*password), 14)
+	if err != nil {
+		return err
+	}
+
+	*password = string(bytes)
+	return nil
 }

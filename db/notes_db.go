@@ -30,7 +30,7 @@ func GetAllNotes() (*[]models.Note, error) {
 	return &notes, nil
 }
 
-func InsertNote(note models.Note) error {
+func CreateNote(note models.Note) error {
 
 	_, err := DBConnection.Exec("INSERT INTO notes VALUES ($1, $2, $3, $4)",
 		&note.Id,

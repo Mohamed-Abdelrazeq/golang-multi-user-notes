@@ -24,7 +24,8 @@ func CreateUser(c *fiber.Ctx) error {
 		})
 	}
 
-	err := db.InsertNote(note)
+	// TODO: MAKE IT CREATE USER
+	err := db.CreateNote(note)
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err,

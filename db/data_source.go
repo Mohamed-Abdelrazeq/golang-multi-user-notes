@@ -1,4 +1,4 @@
-package handler
+package db
 
 import "database/sql"
 
@@ -6,14 +6,18 @@ type DataSource struct {
 	*sql.DB
 }
 
-func OpenDB() (*DataSource, error) {
+var DBConnection DataSource
+
+func OpenDB() error {
 	conn, err := sql.Open(
 		"postgres",
 		"postgres://postgres:5024@localhost:5432/Fiber-CRUD?sslmode=disable",
 	)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return &DataSource{DB: conn}, nil
+	DBConnection = DataSource{conn}
+
+	return nil
 }

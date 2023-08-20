@@ -3,12 +3,13 @@ package handler
 import (
 	"time"
 
+	"github.com/Fiber-CRUD/db"
 	"github.com/Fiber-CRUD/models"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 )
 
-func (dataSource *DataSource) CreateUser(c *fiber.Ctx) error {
+func CreateUser(c *fiber.Ctx) error {
 
 	note := models.Note{
 		Id:        uuid.New(),
@@ -23,7 +24,7 @@ func (dataSource *DataSource) CreateUser(c *fiber.Ctx) error {
 		})
 	}
 
-	err := dataSource.executeInsertNote(note)
+	err := db.InsertNote(note)
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err,

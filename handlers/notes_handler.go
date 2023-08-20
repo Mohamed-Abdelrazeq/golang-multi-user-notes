@@ -4,6 +4,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/Fiber-CRUD/db"
 	"github.com/Fiber-CRUD/models"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
@@ -13,9 +14,9 @@ type selectParams struct {
 	Id uuid.UUID `json:"id" params:"id"`
 }
 
-func (dataSource *DataSource) GetAllNotes(c *fiber.Ctx) error {
+func GetAllNotes(c *fiber.Ctx) error {
 
-	notes, err := dataSource.queryAllNotes()
+	notes, err := db.GetAllNotes()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -25,7 +26,7 @@ func (dataSource *DataSource) GetAllNotes(c *fiber.Ctx) error {
 	})
 }
 
-func (dataSource *DataSource) CreateNote(c *fiber.Ctx) error {
+func CreateNote(c *fiber.Ctx) error {
 
 	note := models.Note{
 		Id:        uuid.New(),
@@ -40,7 +41,7 @@ func (dataSource *DataSource) CreateNote(c *fiber.Ctx) error {
 		})
 	}
 
-	err := dataSource.executeInsertNote(note)
+	err := db.InsertNote(note)
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err,
@@ -53,7 +54,7 @@ func (dataSource *DataSource) CreateNote(c *fiber.Ctx) error {
 	})
 }
 
-func (dataSource *DataSource) DeleteNote(c *fiber.Ctx) error {
+func DeleteNote(c *fiber.Ctx) error {
 
 	id := new(selectParams)
 
@@ -63,7 +64,7 @@ func (dataSource *DataSource) DeleteNote(c *fiber.Ctx) error {
 		})
 	}
 
-	err := dataSource.executeDeleteNote(&id.Id)
+	err := db.DeleteNote(&id.Id)
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err.Error(),
@@ -75,7 +76,7 @@ func (dataSource *DataSource) DeleteNote(c *fiber.Ctx) error {
 	})
 }
 
-func (dataSource *DataSource) GetNoteById(c *fiber.Ctx) error {
+func GetNoteById(c *fiber.Ctx) error {
 
 	id := new(selectParams)
 
@@ -85,7 +86,7 @@ func (dataSource *DataSource) GetNoteById(c *fiber.Ctx) error {
 		})
 	}
 
-	note, err := dataSource.queryGetNoteById(&id.Id)
+	note, err := db.GetNoteById(&id.Id)
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err.Error(),
@@ -98,7 +99,7 @@ func (dataSource *DataSource) GetNoteById(c *fiber.Ctx) error {
 	})
 }
 
-func (dataSource *DataSource) UpdateNote(c *fiber.Ctx) error {
+func UpdateNote(c *fiber.Ctx) error {
 	// TODO: PARSE ID FROM PARAMS
 	note := models.Note{
 		UpdatedAt: time.Now(),
@@ -111,7 +112,7 @@ func (dataSource *DataSource) UpdateNote(c *fiber.Ctx) error {
 		})
 	}
 
-	err := dataSource.executeUpdateNote(note)
+	err := db.UpdateNote(note)
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err.Error(),

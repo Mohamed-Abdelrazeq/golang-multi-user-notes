@@ -3,12 +3,13 @@ package handler
 import (
 	"time"
 
+	"github.com/Fiber-CRUD/db"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
 
-func (dataSource *DataSource) Login(c *fiber.Ctx) error {
+func Login(c *fiber.Ctx) error {
 	type LoginForm struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
@@ -31,7 +32,7 @@ func (dataSource *DataSource) Login(c *fiber.Ctx) error {
 
 	loginForm.Password = password
 
-	rows, err := dataSource.Query("SELECT * FROM users WHERE email = $1 AND password = $2")
+	rows, err := db.DBConnection.Query("SELECT * FROM users WHERE email = $1 AND password = $2")
 	if err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(&fiber.Map{
 			"message": "user is not found",

@@ -1,4 +1,4 @@
-package handler
+package db
 
 import (
 	"errors"
@@ -7,10 +7,10 @@ import (
 	"github.com/google/uuid"
 )
 
-func (dataSource *DataSource) queryAllNotes() (*[]models.Note, error) {
+func GetAllNotes() (*[]models.Note, error) {
 	notes := []models.Note{}
 
-	rows, err := dataSource.Query("SELECT * FROM notes")
+	rows, err := DBConnection.Query("SELECT * FROM notes")
 	if err != nil {
 		return nil, err
 	}
@@ -30,9 +30,9 @@ func (dataSource *DataSource) queryAllNotes() (*[]models.Note, error) {
 	return &notes, nil
 }
 
-func (dataSource *DataSource) executeInsertNote(note models.Note) error {
+func InsertNote(note models.Note) error {
 
-	_, err := dataSource.Exec("INSERT INTO notes VALUES ($1, $2, $3, $4)",
+	_, err := DBConnection.Exec("INSERT INTO notes VALUES ($1, $2, $3, $4)",
 		&note.Id,
 		&note.CreatedAt,
 		&note.UpdatedAt,
@@ -42,8 +42,8 @@ func (dataSource *DataSource) executeInsertNote(note models.Note) error {
 	return err
 }
 
-func (dataSource *DataSource) executeDeleteNote(id *uuid.UUID) error {
-	msg, err := dataSource.Exec("DELETE FROM notes WHERE id = $1",
+func DeleteNote(id *uuid.UUID) error {
+	msg, err := DBConnection.Exec("DELETE FROM notes WHERE id = $1",
 		&id,
 	)
 
@@ -59,8 +59,8 @@ func (dataSource *DataSource) executeDeleteNote(id *uuid.UUID) error {
 	return nil
 }
 
-func (dataSource *DataSource) queryGetNoteById(id *uuid.UUID) (*models.Note, error) {
-	rows, err := dataSource.Query("SELECT * FROM notes WHERE id = $1 LIMIT 1",
+func GetNoteById(id *uuid.UUID) (*models.Note, error) {
+	rows, err := DBConnection.Query("SELECT * FROM notes WHERE id = $1 LIMIT 1",
 		&id,
 	)
 	if err != nil {
@@ -83,8 +83,8 @@ func (dataSource *DataSource) queryGetNoteById(id *uuid.UUID) (*models.Note, err
 	return note, nil
 }
 
-func (dataSource *DataSource) executeUpdateNote(note models.Note) error {
-	msg, err := dataSource.Exec("UPDATE notes SET content=$2, updated_at=$3 WHERE id=$1",
+func UpdateNote(note models.Note) error {
+	msg, err := DBConnection.Exec("UPDATE notes SET content=$2, updated_at=$3 WHERE id=$1",
 		&note.Id,
 		&note.Content,
 		&note.UpdatedAt,

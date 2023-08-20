@@ -3,7 +3,7 @@ package db
 import (
 	"errors"
 
-	"github.com/Fiber-CRUD/models"
+	"github.com/Fiber-CRUD/types/models"
 	"github.com/google/uuid"
 )
 

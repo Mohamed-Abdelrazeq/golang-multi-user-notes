@@ -4,7 +4,7 @@ import (
 	"time"
 
 	"github.com/Fiber-CRUD/db"
-	"github.com/Fiber-CRUD/models"
+	"github.com/Fiber-CRUD/types/models"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"
 )

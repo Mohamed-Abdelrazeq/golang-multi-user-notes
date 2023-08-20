@@ -9,11 +9,12 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+type LoginForm struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
 func Login(c *fiber.Ctx) error {
-	type LoginForm struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
-	}
 
 	loginForm := new(LoginForm)
 

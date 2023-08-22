@@ -16,6 +16,8 @@ type selectParams struct {
 
 func GetAllNotes(c *fiber.Ctx) error {
 
+	id, email := recoverToken(c)
+
 	notes, err := db.GetAllNotes()
 	if err != nil {
 		log.Fatal(err)
@@ -23,6 +25,8 @@ func GetAllNotes(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusOK).JSON(&fiber.Map{
 		"notes": &notes,
+		"id":    id,
+		"email": email,
 	})
 }
 

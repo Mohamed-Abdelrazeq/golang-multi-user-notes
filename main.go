@@ -27,7 +27,6 @@ func main() {
 	app.Route("/authenticate", func(router fiber.Router) {
 		router.Post("/login", handler.Login)
 		router.Post("/register", handler.Register)
-		router.Post("/validate", handler.Validate)
 	})
 
 	app.Route("/api", func(router fiber.Router) {

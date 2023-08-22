@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"time"
+
 	"github.com/Fiber-CRUD/db"
 	"github.com/Fiber-CRUD/types/forms"
 	"github.com/gofiber/fiber/v2"
@@ -31,15 +33,16 @@ func Login(c *fiber.Ctx) error {
 		})
 	}
 
-	// Create the Claims
+	// TODO: Validate Password
+
 	claims := jwt.MapClaims{
 		"id":    user.Id,
 		"email": user.Email,
+		"exp":   time.Now().Add(time.Minute * 60).Unix(),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	// Generate encoded token and send it as response.
 	t, err := token.SignedString([]byte("secret"))
 	if err != nil {
 		return c.SendStatus(fiber.StatusInternalServerError)
@@ -76,9 +79,12 @@ func Register(c *fiber.Ctx) error {
 	})
 }
 
-func Validate(c *fiber.Ctx) error {
-
-	return nil
+func recoverToken(c *fiber.Ctx) (float64, string) {
+	user := c.Locals("user").(*jwt.Token)
+	claims := user.Claims.(jwt.MapClaims)
+	id := claims["id"].(float64)
+	email := claims["email"].(string)
+	return id, email
 }
 
 func hashPassword(password *string) error {

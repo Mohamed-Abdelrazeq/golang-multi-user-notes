@@ -76,6 +76,11 @@ func Register(c *fiber.Ctx) error {
 	})
 }
 
+func Validate(c *fiber.Ctx) error {
+
+	return nil
+}
+
 func hashPassword(password *string) error {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(*password), 14)
 	if err != nil {

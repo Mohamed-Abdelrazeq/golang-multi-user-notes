@@ -27,7 +27,6 @@ func GetUser(loginForm forms.Login) (*models.User, error) {
 		&user.UpdatedAt,
 		&user.Email,
 		&user.Password,
-		&user.Token,
 	)
 
 	return user, nil
@@ -35,12 +34,11 @@ func GetUser(loginForm forms.Login) (*models.User, error) {
 
 func CreateUser(loginForm *forms.Login) error {
 	_, err := DBConnection.Exec(
-		"INSERT INTO users (email, password, created_at, updated_at, token) VALUES ($1, $2, $3, $4, $5)",
+		"INSERT INTO users (email, password, created_at, updated_at) VALUES ($1, $2, $3, $4)",
 		loginForm.Email,
 		loginForm.Password,
 		time.Now(),
 		time.Now(),
-		"",
 	)
 
 	if err != nil {

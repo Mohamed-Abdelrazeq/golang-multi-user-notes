@@ -20,12 +20,6 @@ func Login(c *fiber.Ctx) error {
 		})
 	}
 
-	if err := hashPassword(&loginForm.Password); err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(&fiber.Map{
-			"message": "error hashing the password",
-		})
-	}
-
 	user, err := db.GetUser(*loginForm)
 	if err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(&fiber.Map{
@@ -33,7 +27,11 @@ func Login(c *fiber.Ctx) error {
 		})
 	}
 
-	// TODO: Validate Password
+	if isValid := checkPasswordHash(loginForm.Password, user.Password); !isValid {
+		return c.Status(fiber.StatusUnauthorized).JSON(&fiber.Map{
+			"message": "Invalid password",
+		})
+	}
 
 	claims := jwt.MapClaims{
 		"id":    user.Id,
@@ -61,13 +59,16 @@ func Register(c *fiber.Ctx) error {
 		})
 	}
 
-	if err := hashPassword(&loginForm.Password); err != nil {
+	password, err := hashPassword(loginForm.Password)
+	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err.Error(),
 		})
 	}
 
-	err := db.CreateUser(loginForm)
+	loginForm.Password = password
+
+	err = db.CreateUser(loginForm)
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err.Error(),
@@ -87,12 +88,12 @@ func recoverToken(c *fiber.Ctx) (float64, string) {
 	return id, email
 }
 
-func hashPassword(password *string) error {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(*password), 14)
-	if err != nil {
-		return err
-	}
+func hashPassword(password string) (string, error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 10)
+	return string(bytes), err
+}
 
-	*password = string(bytes)
-	return nil
+func checkPasswordHash(password, hash string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err == nil
 }

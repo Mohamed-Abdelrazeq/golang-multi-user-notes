@@ -53,26 +53,28 @@ func CreateUser(c *fiber.Ctx) error {
 
 	loginForm := new(forms.Login)
 
-	if err := c.BodyParser(&loginForm); err != nil {
+	if err := c.BodyParser(loginForm); err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
-			"message": "Invalid data",
+			"message": err.Error(),
 		})
 	}
 
 	if err := hashPassword(&loginForm.Password); err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
-			"message": err,
+			"message": err.Error(),
 		})
 	}
 
 	err := db.CreateUser(loginForm)
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
-			"message": err,
+			"message": err.Error(),
 		})
 	}
 
-	return nil
+	return c.Status(200).JSON(&fiber.Map{
+		"message": "User registerd corrently",
+	})
 }
 
 func hashPassword(password *string) error {

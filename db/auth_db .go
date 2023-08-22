@@ -1,6 +1,10 @@
 package db
 
-import "github.com/Fiber-CRUD/types/forms"
+import (
+	"time"
+
+	"github.com/Fiber-CRUD/types/forms"
+)
 
 // func AuthenticateUser(loginForm forms.Login) (*models.User, error) {
 // 	user := new(models.User)
@@ -15,5 +19,18 @@ import "github.com/Fiber-CRUD/types/forms"
 // }
 
 func CreateUser(loginForm *forms.Login) error {
+	_, err := DBConnection.Exec(
+		"INSERT INTO users (email, password, created_at, updated_at, token) VALUES ($1, $2, $3, $4, $5)",
+		loginForm.Email,
+		loginForm.Password,
+		time.Now(),
+		time.Now(),
+		"",
+	)
+
+	if err != nil {
+		return err
+	}
+
 	return nil
 }

@@ -31,6 +31,7 @@ func main() {
 
 	app.Route("/api", func(router fiber.Router) {
 		// NOTES
+		router.Get("/notes/favourites", handler.ListFavourites)
 		router.Get("/notes/:id", handler.GetNoteById)
 		router.Delete("/notes/:id", handler.DeleteNote)
 		router.Post("/notes", handler.CreateNote)

@@ -171,3 +171,19 @@ func RemoveFromFavourite(c *fiber.Ctx) error {
 		"note": note,
 	})
 }
+
+func ListFavourites(c *fiber.Ctx) error {
+
+	userId := helpers.RecoverToken(c)
+
+	notes, err := db.DBConnection.DB.ListFavourites(c.Context(), userId)
+	if err != nil {
+		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
+			"notes": err.Error(),
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(&fiber.Map{
+		"notes": notes,
+	})
+}

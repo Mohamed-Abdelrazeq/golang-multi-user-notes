@@ -130,6 +130,40 @@ func (q *Queries) GetNoteById(ctx context.Context, arg GetNoteByIdParams) (Note,
 	return i, err
 }
 
+const listFavourites = `-- name: ListFavourites :many
+SELECT id, title, content, user_id, is_favourite, created_at FROM notes WHERE user_id = $1 AND is_favourite = true
+`
+
+func (q *Queries) ListFavourites(ctx context.Context, userID int32) ([]Note, error) {
+	rows, err := q.db.QueryContext(ctx, listFavourites, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Note
+	for rows.Next() {
+		var i Note
+		if err := rows.Scan(
+			&i.ID,
+			&i.Title,
+			&i.Content,
+			&i.UserID,
+			&i.IsFavourite,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const removeFromFavourites = `-- name: RemoveFromFavourites :one
 UPDATE notes
 set is_favourite = false

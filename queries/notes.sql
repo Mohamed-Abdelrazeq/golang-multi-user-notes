@@ -27,3 +27,6 @@ UPDATE notes
 set is_favourite = false
 WHERE  user_id = $1 AND id = $2
 RETURNING *;
+
+-- name: ListFavourites :many
+SELECT * FROM notes WHERE user_id = $1 AND is_favourite = true;

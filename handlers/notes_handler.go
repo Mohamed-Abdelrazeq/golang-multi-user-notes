@@ -2,24 +2,25 @@ package handler
 
 import (
 	"github.com/Fiber-CRUD/db"
+	"github.com/Fiber-CRUD/helpers"
 	"github.com/gofiber/fiber/v2"
 )
 
-// func GetAllNotes(c *fiber.Ctx) error {
+func GetAllNotes(c *fiber.Ctx) error {
 
-// 	id, email := recoverToken(c)
+	id := helpers.RecoverToken(c)
 
-// 	notes, err := db.GetAllNotes()
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
+	notes, err := db.DBConnection.DB.GetAllNotes(c.Context(), id)
+	if err != nil {
+		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
+			"message": err.Error(),
+		})
+	}
 
-// 	return c.Status(fiber.StatusOK).JSON(&fiber.Map{
-// 		"notes": &notes,
-// 		"id":    id,
-// 		"email": email,
-// 	})
-// }
+	return c.Status(fiber.StatusOK).JSON(&fiber.Map{
+		"notes": &notes,
+	})
+}
 
 func CreateNote(c *fiber.Ctx) error {
 

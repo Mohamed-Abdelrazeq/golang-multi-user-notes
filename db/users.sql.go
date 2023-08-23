@@ -9,6 +9,22 @@ import (
 	"context"
 )
 
+const authenticateUser = `-- name: AuthenticateUser :one
+SELECT id, email, password, created_at FROM users WHERE email = $1
+`
+
+func (q *Queries) AuthenticateUser(ctx context.Context, email string) (User, error) {
+	row := q.db.QueryRowContext(ctx, authenticateUser, email)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Email,
+		&i.Password,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const createUser = `-- name: CreateUser :one
 INSERT INTO users (email, password) VALUES ($1, $2) RETURNING id, email, password, created_at
 `

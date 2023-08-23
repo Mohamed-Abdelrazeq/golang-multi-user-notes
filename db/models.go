@@ -9,17 +9,17 @@ import (
 )
 
 type Note struct {
-	ID          int32
-	Title       string
-	Content     string
-	UserID      int32
-	IsFavourite sql.NullBool
-	CreatedAt   sql.NullTime
+	ID          int32        `json:"id"`
+	Title       string       `json:"title"`
+	Content     string       `json:"content"`
+	UserID      int32        `json:"user_id"`
+	IsFavourite sql.NullBool `json:"is_favourite"`
+	CreatedAt   sql.NullTime `json:"created_at"`
 }
 
 type User struct {
-	ID        int32
-	Email     string
-	Password  string
-	CreatedAt sql.NullTime
+	ID        int32        `json:"id"`
+	Email     string       `json:"email"`
+	Password  string       `json:"password"`
+	CreatedAt sql.NullTime `json:"created_at"`
 }

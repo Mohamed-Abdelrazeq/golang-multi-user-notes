@@ -27,14 +27,14 @@ func CreateNote(c *fiber.Ctx) error {
 
 	if err := c.BodyParser(&createNoteParams); err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
-			"message1": err.Error(),
+			"message": err.Error(),
 		})
 	}
 
 	note, err := db.DBConnection.DB.CreateNote(c.Context(), *createNoteParams)
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
-			"message2": createNoteParams,
+			"message": createNoteParams,
 		})
 	}
 

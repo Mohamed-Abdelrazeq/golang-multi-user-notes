@@ -14,9 +14,9 @@ INSERT INTO notes (user_id, title, content) VALUES ($1, $2, $3) RETURNING id, ti
 `
 
 type CreateNoteParams struct {
-	UserID  int32
-	Title   string
-	Content string
+	UserID  int32  `json:"user_id"`
+	Title   string `json:"title"`
+	Content string `json:"content"`
 }
 
 func (q *Queries) CreateNote(ctx context.Context, arg CreateNoteParams) (Note, error) {

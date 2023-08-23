@@ -3,11 +3,11 @@ CREATE TABLE "users" (
   "id" SERIAL PRIMARY KEY,
   "email" text UNIQUE NOT NULL,
   "password" text NOT NULL,
-  "created_at" timestamp
+  "created_at" timestamp DEFAULT 'now()'
 );
 
 CREATE TABLE "notes" (
-  "id" integer PRIMARY KEY,
+  "id" SERIAL PRIMARY KEY,
   "title" text NOT NULL,
   "content" text NOT NULL,
   "user_id" integer NOT NULL,

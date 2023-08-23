@@ -1,17 +1,9 @@
 package handler
 
-// import (
-// 	"log"
-// 	"time"
-
-// 	"github.com/Fiber-CRUD/types/models"
-// 	"github.com/gofiber/fiber/v2"
-// 	"github.com/google/uuid"
-// )
-
-// type selectParams struct {
-// 	Id uuid.UUID `json:"id" params:"id"`
-// }
+import (
+	"github.com/Fiber-CRUD/db"
+	"github.com/gofiber/fiber/v2"
+)
 
 // func GetAllNotes(c *fiber.Ctx) error {
 
@@ -29,33 +21,27 @@ package handler
 // 	})
 // }
 
-// func CreateNote(c *fiber.Ctx) error {
+func CreateNote(c *fiber.Ctx) error {
 
-// 	note := models.Note{
-// 		Id:        uuid.New(),
-// 		CreatedAt: time.Now(),
-// 		UpdatedAt: time.Now(),
-// 	}
+	createNoteParams := new(db.CreateNoteParams)
 
-// 	// TODO: FIND A BETTER WAY TO VALIDATE MODELS
-// 	if err := c.BodyParser(&note); err != nil || note.Content == "" {
-// 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
-// 			"message": "Content can't be empty",
-// 		})
-// 	}
+	if err := c.BodyParser(&createNoteParams); err != nil {
+		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
+			"message1": err.Error(),
+		})
+	}
 
-// 	err := db.CreateNote(note)
-// 	if err != nil {
-// 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
-// 			"message": err,
-// 		})
-// 	}
+	note, err := db.DBConnection.DB.CreateNote(c.Context(), *createNoteParams)
+	if err != nil {
+		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
+			"message2": createNoteParams,
+		})
+	}
 
-// 	return c.Status(fiber.StatusCreated).JSON(&fiber.Map{
-// 		"message": "Note Created Successfully",
-// 		"note":    note,
-// 	})
-// }
+	return c.Status(fiber.StatusCreated).JSON(&fiber.Map{
+		"note": note,
+	})
+}
 
 // func DeleteNote(c *fiber.Ctx) error {
 

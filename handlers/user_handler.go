@@ -3,7 +3,6 @@ package handler
 import (
 	"github.com/Fiber-CRUD/db"
 	"github.com/gofiber/fiber/v2"
-	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -77,20 +76,20 @@ func Register(c *fiber.Ctx) error {
 	})
 }
 
-func recoverToken(c *fiber.Ctx) (float64, string) {
-	user := c.Locals("user").(*jwt.Token)
-	claims := user.Claims.(jwt.MapClaims)
-	id := claims["id"].(float64)
-	email := claims["email"].(string)
-	return id, email
-}
+// func recoverToken(c *fiber.Ctx) (float64, string) {
+// 	user := c.Locals("user").(*jwt.Token)
+// 	claims := user.Claims.(jwt.MapClaims)
+// 	id := claims["id"].(float64)
+// 	email := claims["email"].(string)
+// 	return id, email
+// }
 
 func hashPassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 10)
 	return string(bytes), err
 }
 
-func checkPasswordHash(password, hash string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-	return err == nil
-}
+// func checkPasswordHash(password, hash string) bool {
+// 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+// 	return err == nil
+// }

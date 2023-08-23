@@ -5,21 +5,21 @@
 package db
 
 import (
-	"database/sql"
+	"time"
 )
 
 type Note struct {
-	ID          int32        `json:"id"`
-	Title       string       `json:"title"`
-	Content     string       `json:"content"`
-	UserID      int32        `json:"user_id"`
-	IsFavourite sql.NullBool `json:"is_favourite"`
-	CreatedAt   sql.NullTime `json:"created_at"`
+	ID          int32     `json:"id"`
+	Title       string    `json:"title"`
+	Content     string    `json:"content"`
+	UserID      int32     `json:"user_id"`
+	IsFavourite bool      `json:"is_favourite"`
+	CreatedAt   time.Time `json:"created_at"`
 }
 
 type User struct {
-	ID        int32        `json:"id"`
-	Email     string       `json:"email"`
-	Password  string       `json:"password"`
-	CreatedAt sql.NullTime `json:"created_at"`
+	ID        int32     `json:"id"`
+	Email     string    `json:"email"`
+	Password  string    `json:"password"`
+	CreatedAt time.Time `json:"created_at"`
 }

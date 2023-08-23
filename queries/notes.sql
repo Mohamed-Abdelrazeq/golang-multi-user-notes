@@ -15,3 +15,15 @@ UPDATE notes
 SET title = $3, content = $4
 WHERE  user_id = $1 AND id = $2
 RETURNING *;
+
+-- name: AddToFavourites :one
+UPDATE notes
+set is_favourite = true
+WHERE  user_id = $1 AND id = $2
+RETURNING *;
+
+-- name: RemoveFromFavourites :one
+UPDATE notes
+set is_favourite = false
+WHERE  user_id = $1 AND id = $2
+RETURNING *;

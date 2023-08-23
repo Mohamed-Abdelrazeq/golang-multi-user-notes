@@ -24,21 +24,21 @@ func GetAllNotes(c *fiber.Ctx) error {
 
 func CreateNote(c *fiber.Ctx) error {
 
-	createNoteParams := new(db.CreateNoteParams)
+	params := new(db.CreateNoteParams)
 	userId := helpers.RecoverToken(c)
 
-	if err := c.BodyParser(&createNoteParams); err != nil {
+	if err := c.BodyParser(&params); err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err.Error(),
 		})
 	}
 
-	createNoteParams.UserID = userId
+	params.UserID = userId
 
-	note, err := db.DBConnection.DB.CreateNote(c.Context(), *createNoteParams)
+	note, err := db.DBConnection.DB.CreateNote(c.Context(), *params)
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
-			"message": createNoteParams,
+			"message": params,
 		})
 	}
 
@@ -50,17 +50,17 @@ func CreateNote(c *fiber.Ctx) error {
 func DeleteNote(c *fiber.Ctx) error {
 
 	userId := helpers.RecoverToken(c)
-	deleteNoteParams := new(db.DeleteNoteParams)
+	params := new(db.DeleteNoteParams)
 
-	if err := c.ParamsParser(deleteNoteParams); err != nil {
+	if err := c.ParamsParser(params); err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err.Error(),
 		})
 	}
 
-	deleteNoteParams.UserID = userId
+	params.UserID = userId
 
-	err := db.DBConnection.DB.DeleteNote(c.Context(), *deleteNoteParams)
+	err := db.DBConnection.DB.DeleteNote(c.Context(), *params)
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err.Error(),
@@ -75,17 +75,17 @@ func DeleteNote(c *fiber.Ctx) error {
 func GetNoteById(c *fiber.Ctx) error {
 
 	userId := helpers.RecoverToken(c)
-	getNoteByIdParams := new(db.GetNoteByIdParams)
+	params := new(db.GetNoteByIdParams)
 
-	if err := c.ParamsParser(getNoteByIdParams); err != nil {
+	if err := c.ParamsParser(params); err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err.Error(),
 		})
 	}
 
-	getNoteByIdParams.UserID = userId
+	params.UserID = userId
 
-	note, err := db.DBConnection.DB.GetNoteById(c.Context(), *getNoteByIdParams)
+	note, err := db.DBConnection.DB.GetNoteById(c.Context(), *params)
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err.Error(),
@@ -100,17 +100,67 @@ func GetNoteById(c *fiber.Ctx) error {
 func UpdateNote(c *fiber.Ctx) error {
 
 	userId := helpers.RecoverToken(c)
-	updateNoteParams := new(db.UpdateNoteParams)
+	params := new(db.UpdateNoteParams)
 
-	if err := c.BodyParser(updateNoteParams); err != nil {
+	if err := c.BodyParser(params); err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err.Error(),
 		})
 	}
 
-	updateNoteParams.UserID = userId
+	params.UserID = userId
 
-	note, err := db.DBConnection.DB.UpdateNote(c.Context(), *updateNoteParams)
+	note, err := db.DBConnection.DB.UpdateNote(c.Context(), *params)
+	if err != nil {
+		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
+			"message": err.Error(),
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(&fiber.Map{
+		"note": note,
+	})
+}
+
+func AddToFavourites(c *fiber.Ctx) error {
+
+	userId := helpers.RecoverToken(c)
+	params := new(db.AddToFavouritesParams)
+
+	if err := c.ParamsParser(params); err != nil {
+		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
+			"message": err.Error(),
+		})
+	}
+
+	params.UserID = userId
+
+	note, err := db.DBConnection.DB.AddToFavourites(c.Context(), *params)
+	if err != nil {
+		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
+			"message": err.Error(),
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(&fiber.Map{
+		"note": note,
+	})
+}
+
+func RemoveFromFavourite(c *fiber.Ctx) error {
+
+	userId := helpers.RecoverToken(c)
+	params := new(db.RemoveFromFavouritesParams)
+
+	if err := c.ParamsParser(params); err != nil {
+		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
+			"message": err.Error(),
+		})
+	}
+
+	params.UserID = userId
+
+	note, err := db.DBConnection.DB.RemoveFromFavourites(c.Context(), *params)
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err.Error(),

@@ -36,6 +36,8 @@ func main() {
 		router.Post("/notes", handler.CreateNote)
 		router.Patch("/notes", handler.UpdateNote)
 		router.Get("/notes", handler.GetAllNotes)
+		router.Put("/notes/add-to-favourites/:id", handler.AddToFavourites)
+		router.Put("/notes/remove-to-favourites/:id", handler.RemoveFromFavourite)
 		// HEALTH
 		router.Get("/health", handler.CheckHealth)
 	})

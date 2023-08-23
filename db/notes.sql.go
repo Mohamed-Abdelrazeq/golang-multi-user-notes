@@ -9,6 +9,32 @@ import (
 	"context"
 )
 
+const addToFavourites = `-- name: AddToFavourites :one
+UPDATE notes
+set is_favourite = true
+WHERE  user_id = $1 AND id = $2
+RETURNING id, title, content, user_id, is_favourite, created_at
+`
+
+type AddToFavouritesParams struct {
+	UserID int32 `json:"user_id"`
+	ID     int32 `json:"id"`
+}
+
+func (q *Queries) AddToFavourites(ctx context.Context, arg AddToFavouritesParams) (Note, error) {
+	row := q.db.QueryRowContext(ctx, addToFavourites, arg.UserID, arg.ID)
+	var i Note
+	err := row.Scan(
+		&i.ID,
+		&i.Title,
+		&i.Content,
+		&i.UserID,
+		&i.IsFavourite,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const createNote = `-- name: CreateNote :one
 INSERT INTO notes (user_id, title, content) VALUES ($1, $2, $3) RETURNING id, title, content, user_id, is_favourite, created_at
 `
@@ -92,6 +118,32 @@ type GetNoteByIdParams struct {
 
 func (q *Queries) GetNoteById(ctx context.Context, arg GetNoteByIdParams) (Note, error) {
 	row := q.db.QueryRowContext(ctx, getNoteById, arg.UserID, arg.ID)
+	var i Note
+	err := row.Scan(
+		&i.ID,
+		&i.Title,
+		&i.Content,
+		&i.UserID,
+		&i.IsFavourite,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const removeFromFavourites = `-- name: RemoveFromFavourites :one
+UPDATE notes
+set is_favourite = false
+WHERE  user_id = $1 AND id = $2
+RETURNING id, title, content, user_id, is_favourite, created_at
+`
+
+type RemoveFromFavouritesParams struct {
+	UserID int32 `json:"user_id"`
+	ID     int32 `json:"id"`
+}
+
+func (q *Queries) RemoveFromFavourites(ctx context.Context, arg RemoveFromFavouritesParams) (Note, error) {
+	row := q.db.QueryRowContext(ctx, removeFromFavourites, arg.UserID, arg.ID)
 	var i Note
 	err := row.Scan(
 		&i.ID,

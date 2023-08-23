@@ -40,6 +40,8 @@ func AuthenticateUser(c *fiber.Ctx) error {
 		})
 	}
 
+	go helpers.SendVerificationMail(authenticateUserParams.Email)
+
 	return c.JSON(fiber.Map{"token": tokenString})
 }
 

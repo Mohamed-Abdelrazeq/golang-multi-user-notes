@@ -5,6 +5,7 @@ import (
 
 	"github.com/Fiber-CRUD/db"
 	handler "github.com/Fiber-CRUD/handlers"
+	"github.com/Fiber-CRUD/helpers"
 	jwtware "github.com/gofiber/contrib/jwt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -13,6 +14,7 @@ import (
 
 func main() {
 	app := fiber.New()
+	helpers.LoadEnv()
 
 	app.Use(logger.New())
 	app.Use("/api", jwtware.New(jwtware.Config{

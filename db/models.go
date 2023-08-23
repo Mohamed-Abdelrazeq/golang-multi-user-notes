@@ -5,22 +5,21 @@
 package db
 
 import (
-	"time"
-
-	"github.com/google/uuid"
+	"database/sql"
 )
 
 type Note struct {
-	ID        uuid.UUID
-	CreatedAt time.Time
-	UpdatedAt time.Time
-	Content   string
+	ID          int32
+	Title       string
+	Content     string
+	UserID      int32
+	IsFavourite sql.NullBool
+	CreatedAt   sql.NullTime
 }
 
 type User struct {
 	ID        int32
-	CreatedAt time.Time
-	UpdatedAt time.Time
 	Email     string
 	Password  string
+	CreatedAt sql.NullTime
 }

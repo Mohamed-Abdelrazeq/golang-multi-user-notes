@@ -1,7 +1,0 @@
--- +goose Up
-ALTER TABLE notes ALTER COLUMN created_at SET DEFAULT NOW();
-ALTER TABLE notes ALTER COLUMN updated_at SET DEFAULT NOW();
-
--- +goose Down
-ALTER TABLE notes ALTER COLUMN created_at DROP DEFAULT;
-ALTER TABLE notes ALTER COLUMN updated_at DROP DEFAULT;

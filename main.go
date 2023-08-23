@@ -31,10 +31,10 @@ func main() {
 
 	app.Route("/api", func(router fiber.Router) {
 		// NOTES
-		// router.Get("/notes/:id", handler.GetNoteById)
-		// router.Delete("/notes/:id", handler.DeleteNote)
+		router.Get("/notes/:id", handler.GetNoteById)
+		router.Delete("/notes/:id", handler.DeleteNote)
 		router.Post("/notes", handler.CreateNote)
-		// router.Patch("/notes", handler.UpdateNote)
+		router.Patch("/notes", handler.UpdateNote)
 		router.Get("/notes", handler.GetAllNotes)
 		// HEALTH
 		router.Get("/health", handler.CheckHealth)

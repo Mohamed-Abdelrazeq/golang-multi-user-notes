@@ -33,6 +33,20 @@ func (q *Queries) CreateNote(ctx context.Context, arg CreateNoteParams) (Note, e
 	return i, err
 }
 
+const deleteNote = `-- name: DeleteNote :exec
+DELETE FROM notes WHERE user_id = $1 AND id = $2
+`
+
+type DeleteNoteParams struct {
+	UserID int32 `json:"user_id"`
+	ID     int32 `json:"id"`
+}
+
+func (q *Queries) DeleteNote(ctx context.Context, arg DeleteNoteParams) error {
+	_, err := q.db.ExecContext(ctx, deleteNote, arg.UserID, arg.ID)
+	return err
+}
+
 const getAllNotes = `-- name: GetAllNotes :many
 SELECT id, title, content, user_id, is_favourite, created_at FROM notes WHERE user_id = $1
 `
@@ -65,4 +79,60 @@ func (q *Queries) GetAllNotes(ctx context.Context, userID int32) ([]Note, error)
 		return nil, err
 	}
 	return items, nil
+}
+
+const getNoteById = `-- name: GetNoteById :one
+SELECT id, title, content, user_id, is_favourite, created_at FROM notes WHERE user_id = $1 AND id = $2
+`
+
+type GetNoteByIdParams struct {
+	UserID int32 `json:"user_id"`
+	ID     int32 `json:"id"`
+}
+
+func (q *Queries) GetNoteById(ctx context.Context, arg GetNoteByIdParams) (Note, error) {
+	row := q.db.QueryRowContext(ctx, getNoteById, arg.UserID, arg.ID)
+	var i Note
+	err := row.Scan(
+		&i.ID,
+		&i.Title,
+		&i.Content,
+		&i.UserID,
+		&i.IsFavourite,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const updateNote = `-- name: UpdateNote :one
+UPDATE notes 
+SET title = $3, content = $4
+WHERE  user_id = $1 AND id = $2
+RETURNING id, title, content, user_id, is_favourite, created_at
+`
+
+type UpdateNoteParams struct {
+	UserID  int32  `json:"user_id"`
+	ID      int32  `json:"id"`
+	Title   string `json:"title"`
+	Content string `json:"content"`
+}
+
+func (q *Queries) UpdateNote(ctx context.Context, arg UpdateNoteParams) (Note, error) {
+	row := q.db.QueryRowContext(ctx, updateNote,
+		arg.UserID,
+		arg.ID,
+		arg.Title,
+		arg.Content,
+	)
+	var i Note
+	err := row.Scan(
+		&i.ID,
+		&i.Title,
+		&i.Content,
+		&i.UserID,
+		&i.IsFavourite,
+		&i.CreatedAt,
+	)
+	return i, err
 }

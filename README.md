@@ -3,13 +3,15 @@
  in this app and developing a multi user not app with any user can 
  - Create an account
  - CRUD notes
- - Create favourite notes
+ - Favourite notes
  - Categorize notes
 
-## Technologies
+## Technologies & Tools
 this app is main developed in <b>GO</b> and I also used
 - Fiber
 - JWT
 - Docker
 - AWS
 - PostgreSQL
+- SQLc
+- Crypto

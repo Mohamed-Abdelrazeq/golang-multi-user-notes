@@ -12,8 +12,6 @@ func RecoverToken(c *fiber.Ctx) int32 {
 	claims := user.Claims.(jwt.MapClaims)
 	id := claims["id"].(float64)
 	idInt := int32(id)
-
-	println(idInt)
 	return idInt
 }
 

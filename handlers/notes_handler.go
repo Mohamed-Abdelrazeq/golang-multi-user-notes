@@ -25,12 +25,15 @@ func GetAllNotes(c *fiber.Ctx) error {
 func CreateNote(c *fiber.Ctx) error {
 
 	createNoteParams := new(db.CreateNoteParams)
+	id := helpers.RecoverToken(c)
 
 	if err := c.BodyParser(&createNoteParams); err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err.Error(),
 		})
 	}
+
+	createNoteParams.UserID = id
 
 	note, err := db.DBConnection.DB.CreateNote(c.Context(), *createNoteParams)
 	if err != nil {

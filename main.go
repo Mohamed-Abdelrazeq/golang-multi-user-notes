@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 
 	"github.com/Fiber-CRUD/db"
 	handler "github.com/Fiber-CRUD/handlers"
@@ -18,7 +19,7 @@ func main() {
 
 	app.Use(logger.New())
 	app.Use("/api", jwtware.New(jwtware.Config{
-		SigningKey: jwtware.SigningKey{Key: []byte("secret")},
+		SigningKey: jwtware.SigningKey{Key: []byte(os.Getenv("JWT_SECRET_KEY"))},
 	}))
 
 	err := db.OpenDBConnection()

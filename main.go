@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/Fiber-CRUD/db"
+	db "github.com/Fiber-CRUD/db_row_sql"
 	handler "github.com/Fiber-CRUD/handlers"
 	jwtware "github.com/gofiber/contrib/jwt"
 	"github.com/gofiber/fiber/v2"

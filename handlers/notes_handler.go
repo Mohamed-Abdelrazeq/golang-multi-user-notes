@@ -4,7 +4,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/Fiber-CRUD/db"
+	db "github.com/Fiber-CRUD/db_row_sql"
 	"github.com/Fiber-CRUD/types/models"
 	"github.com/gofiber/fiber/v2"
 	"github.com/google/uuid"

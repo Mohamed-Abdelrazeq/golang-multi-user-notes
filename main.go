@@ -3,7 +3,6 @@ package main
 import (
 	"log"
 
-	db "github.com/Fiber-CRUD/db_row_sql"
 	handler "github.com/Fiber-CRUD/handlers"
 	jwtware "github.com/gofiber/contrib/jwt"
 	"github.com/gofiber/fiber/v2"
@@ -19,23 +18,23 @@ func main() {
 		SigningKey: jwtware.SigningKey{Key: []byte("secret")},
 	}))
 
-	err := db.OpenDB()
-	if err != nil {
-		log.Fatal("ERROR CONNECTING TO DB")
-	}
+	// err := db.OpenDB()
+	// if err != nil {
+	// 	log.Fatal("ERROR CONNECTING TO DB")
+	// }
 
 	app.Route("/authenticate", func(router fiber.Router) {
-		router.Post("/login", handler.Login)
-		router.Post("/register", handler.Register)
+		// router.Post("/login", handler.Login)
+		// router.Post("/register", handler.Register)
 	})
 
 	app.Route("/api", func(router fiber.Router) {
 		// NOTES
-		router.Get("/notes/:id", handler.GetNoteById)
-		router.Delete("/notes/:id", handler.DeleteNote)
-		router.Post("/notes", handler.CreateNote)
-		router.Patch("/notes", handler.UpdateNote)
-		router.Get("/notes", handler.GetAllNotes)
+		// router.Get("/notes/:id", handler.GetNoteById)
+		// router.Delete("/notes/:id", handler.DeleteNote)
+		// router.Post("/notes", handler.CreateNote)
+		// router.Patch("/notes", handler.UpdateNote)
+		// router.Get("/notes", handler.GetAllNotes)
 		// HEALTH
 		router.Get("/health", handler.CheckHealth)
 	})

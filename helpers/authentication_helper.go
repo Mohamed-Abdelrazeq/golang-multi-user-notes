@@ -10,11 +10,14 @@ import (
 func RecoverToken(c *fiber.Ctx) int32 {
 	user := c.Locals("user").(*jwt.Token)
 	claims := user.Claims.(jwt.MapClaims)
-	id := claims["id"].(int32)
-	return id
+	id := claims["id"].(float64)
+	idInt := int32(id)
+
+	println(idInt)
+	return idInt
 }
 
-func CreateToken(id int) (string, error) {
+func CreateToken(id int32) (string, error) {
 	claims := jwt.MapClaims{
 		"id":  id,
 		"exp": time.Now().Add(time.Minute * 60).Unix(),

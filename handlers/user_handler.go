@@ -33,7 +33,7 @@ func AuthenticateUser(c *fiber.Ctx) error {
 		})
 	}
 
-	tokenString, err := helpers.CreateToken(int(user.ID))
+	tokenString, err := helpers.CreateToken(user.ID)
 	if err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(&fiber.Map{
 			"message": err.Error(),

@@ -1,6 +1,6 @@
 -- +goose Up
 CREATE TABLE "users" (
-  "id" integer PRIMARY KEY,
+  "id" SERIAL PRIMARY KEY,
   "email" text UNIQUE NOT NULL,
   "password" text NOT NULL,
   "created_at" timestamp

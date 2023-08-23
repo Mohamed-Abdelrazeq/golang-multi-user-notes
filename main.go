@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 
+	"github.com/Fiber-CRUD/db"
 	handler "github.com/Fiber-CRUD/handlers"
 	jwtware "github.com/gofiber/contrib/jwt"
 	"github.com/gofiber/fiber/v2"
@@ -18,14 +19,14 @@ func main() {
 		SigningKey: jwtware.SigningKey{Key: []byte("secret")},
 	}))
 
-	// err := db.OpenDB()
-	// if err != nil {
-	// 	log.Fatal("ERROR CONNECTING TO DB")
-	// }
+	err := db.OpenDBConnection()
+	if err != nil {
+		log.Fatal("ERROR CONNECTING TO DB")
+	}
 
 	app.Route("/authenticate", func(router fiber.Router) {
 		// router.Post("/login", handler.Login)
-		// router.Post("/register", handler.Register)
+		router.Post("/register", handler.Register)
 	})
 
 	app.Route("/api", func(router fiber.Router) {

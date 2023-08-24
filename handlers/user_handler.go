@@ -20,7 +20,7 @@ func AuthenticateUser(c *fiber.Ctx) error {
 		})
 	}
 
-	user, err := db.DBConnection.DB.AuthenticateUser(c.Context(), authenticateUserParams.Email)
+	user, err := db.DBConnection.DB.GetUserByEmail(c.Context(), authenticateUserParams.Email)
 	if err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(&fiber.Map{
 			"message": "Invalid email",
@@ -45,23 +45,26 @@ func AuthenticateUser(c *fiber.Ctx) error {
 
 func CreateUser(c *fiber.Ctx) error {
 
+	// ALOCATE PARAMS
 	createUserParams := new(db.CreateUserParams)
 
+	// PASE PARAMS
 	if err := c.BodyParser(createUserParams); err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err.Error(),
 		})
 	}
 
+	// HASH PASSWORD
 	password, err := helpers.HashPassword(createUserParams.Password)
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err.Error(),
 		})
 	}
-
 	createUserParams.Password = password
 
+	// ADD TO DB
 	user, err := db.DBConnection.DB.CreateUser(c.Context(), *createUserParams)
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
@@ -69,14 +72,11 @@ func CreateUser(c *fiber.Ctx) error {
 		})
 	}
 
+	// WELCOME EMAIL
+	go helpers.SendWelcomeEmail(createUserParams.Email)
+
+	// SEND STATUS 200
 	return c.Status(200).JSON(&fiber.Map{
 		"user": user,
 	})
-}
-
-func SendVerificationMail(c fiber.Ctx) error {
-	email := ""
-	go helpers.SendVerificationMail(email)
-
-	return nil
 }

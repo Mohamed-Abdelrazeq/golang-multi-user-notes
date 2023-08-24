@@ -6,8 +6,7 @@ import (
 	"os"
 )
 
-func SendVerificationMail(email string) {
-
+func SendWelcomeEmail(email string) {
 	// Configuration
 	sender := os.Getenv("EMAIL")
 	senderAppPassword := os.Getenv("EMAIL_PASSWORD")
@@ -16,10 +15,13 @@ func SendVerificationMail(email string) {
 	smtpHost := "smtp.gmail.com"
 	smtpPort := "587"
 
-	message := []byte("To: " + receiver[0] + "\r\n" +
-		"Subject: Notes App Verification Code\r\n" +
-		"\r\n" +
-		"THIS IS YOUR VERIFICATION CODE\r\n")
+	// Message
+	message := []byte(
+		"To: " + receiver[0] + "\r\n" +
+			"Subject: Welcome to the new era\r\n" +
+			"\r\n" +
+			"Welcome to my humble app, I hope you enjoy it and find it useful!",
+	)
 
 	// Create authentication
 	auth := smtp.PlainAuth("", sender, senderAppPassword, smtpHost)

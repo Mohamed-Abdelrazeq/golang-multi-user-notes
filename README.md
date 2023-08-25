@@ -17,5 +17,5 @@ this app is main developed in <b>GO</b> and I also used
 - PostgreSQL for Data Storage
 - Docker as a Container
 - SMTP for Mailing
-- AWS S3 for Files Storage
+- AWS S3 for Files Storage ( Coming Soon )
 - AWS for Hosting ( Coming Soon )

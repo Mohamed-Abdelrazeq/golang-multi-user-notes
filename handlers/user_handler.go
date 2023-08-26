@@ -1,9 +1,9 @@
 package handler
 
 import (
-	"github.com/Fiber-CRUD/db"
-	"github.com/Fiber-CRUD/helpers"
 	"github.com/gofiber/fiber/v2"
+	"github.com/multi-user-notes-app/db"
+	"github.com/multi-user-notes-app/helpers"
 )
 
 func AuthenticateUser(c *fiber.Ctx) error {

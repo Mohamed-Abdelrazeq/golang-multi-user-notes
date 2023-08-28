@@ -12,7 +12,7 @@ type apiConfig struct {
 var DBConnection apiConfig
 
 func OpenDBConnection() error {
-	db, err := sql.Open(os.Getenv("GOOSE_DRIVER"), os.Getenv("DB"))
+	db, err := sql.Open(os.Getenv("DRIVER"), os.Getenv("DB"))
 	if err != nil {
 		return err
 	}

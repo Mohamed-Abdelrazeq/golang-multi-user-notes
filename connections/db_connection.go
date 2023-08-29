@@ -1,22 +1,24 @@
-package db
+package connections
 
 import (
 	"database/sql"
 	"os"
+
+	"github.com/multi-user-notes-app/db"
 )
 
 type apiConfig struct {
-	DB *Queries
+	DB *db.Queries
 }
 
 var DBConnection apiConfig
 
 func OpenDBConnection() error {
-	db, err := sql.Open(os.Getenv("DRIVER"), os.Getenv("DB"))
+	sqlDB, err := sql.Open(os.Getenv("DRIVER"), os.Getenv("DB"))
 	if err != nil {
 		return err
 	}
-	dbQueries := New(db)
+	dbQueries := db.New(sqlDB)
 
 	DBConnection = apiConfig{
 		DB: dbQueries,

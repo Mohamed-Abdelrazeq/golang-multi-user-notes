@@ -11,6 +11,7 @@ import (
 	"github.com/multi-user-notes-app/db"
 	handler "github.com/multi-user-notes-app/handlers"
 	"github.com/multi-user-notes-app/helpers"
+	supa "github.com/multi-user-notes-app/supabase"
 )
 
 func main() {
@@ -22,6 +23,7 @@ func main() {
 		SigningKey: jwtware.SigningKey{Key: []byte(os.Getenv("JWT_SECRET_KEY"))},
 	}))
 
+	supa.OpenClientConnection()
 	err := db.OpenDBConnection()
 	if err != nil {
 		log.Fatal("ERROR CONNECTING TO DB")
@@ -29,7 +31,8 @@ func main() {
 
 	app.Route("/authenticate", func(router fiber.Router) {
 		router.Post("/authenticate-user", handler.AuthenticateUser)
-		router.Post("/create-user", handler.CreateUser)
+		// router.Post("/create-user", handler.CreateUser)
+		router.Post("/create-user", supa.CreateUser)
 	})
 
 	app.Route("/api", func(router fiber.Router) {

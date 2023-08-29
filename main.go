@@ -4,13 +4,13 @@ import (
 	"log"
 	"os"
 
-	"github.com/Fiber-CRUD/db"
-	handler "github.com/Fiber-CRUD/handlers"
-	"github.com/Fiber-CRUD/helpers"
 	jwtware "github.com/gofiber/contrib/jwt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	_ "github.com/lib/pq"
+	"github.com/multi-user-notes-app/db"
+	handler "github.com/multi-user-notes-app/handlers"
+	"github.com/multi-user-notes-app/helpers"
 )
 
 func main() {

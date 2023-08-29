@@ -1,4 +1,4 @@
 vendor
 .env
 go.sum
-Fiber-CRUD
+multi-user-notes-app

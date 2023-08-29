@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"os"
 )
 
 type apiConfig struct {
@@ -11,7 +12,7 @@ type apiConfig struct {
 var DBConnection apiConfig
 
 func OpenDBConnection() error {
-	db, err := sql.Open("postgres", "postgres://postgres:5024@localhost:5432/Fiber-CRUD?sslmode=disable")
+	db, err := sql.Open(os.Getenv("GOOSE_DRIVER"), os.Getenv("DB"))
 	if err != nil {
 		return err
 	}

@@ -1,4 +1,4 @@
-module github.com/Fiber-CRUD
+module github.com/multi-user-notes-app
 
 go 1.20
 

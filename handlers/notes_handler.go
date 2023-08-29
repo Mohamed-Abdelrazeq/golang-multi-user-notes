@@ -2,7 +2,6 @@ package handler
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/multi-user-notes-app/connections"
 	"github.com/multi-user-notes-app/db"
 	"github.com/multi-user-notes-app/helpers"
 )
@@ -11,7 +10,7 @@ func GetAllNotes(c *fiber.Ctx) error {
 
 	userId := helpers.RecoverToken(c)
 
-	notes, err := connections.DBConnection.DB.GetAllNotes(c.Context(), userId)
+	notes, err := db.DBConnection.DB.GetAllNotes(c.Context(), userId)
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err.Error(),
@@ -36,7 +35,7 @@ func CreateNote(c *fiber.Ctx) error {
 
 	params.UserID = userId
 
-	note, err := connections.DBConnection.DB.CreateNote(c.Context(), *params)
+	note, err := db.DBConnection.DB.CreateNote(c.Context(), *params)
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": params,
@@ -61,7 +60,7 @@ func DeleteNote(c *fiber.Ctx) error {
 
 	params.UserID = userId
 
-	err := connections.DBConnection.DB.DeleteNote(c.Context(), *params)
+	err := db.DBConnection.DB.DeleteNote(c.Context(), *params)
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err.Error(),
@@ -86,7 +85,7 @@ func GetNoteById(c *fiber.Ctx) error {
 
 	params.UserID = userId
 
-	note, err := connections.DBConnection.DB.GetNoteById(c.Context(), *params)
+	note, err := db.DBConnection.DB.GetNoteById(c.Context(), *params)
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err.Error(),
@@ -111,7 +110,7 @@ func UpdateNote(c *fiber.Ctx) error {
 
 	params.UserID = userId
 
-	note, err := connections.DBConnection.DB.UpdateNote(c.Context(), *params)
+	note, err := db.DBConnection.DB.UpdateNote(c.Context(), *params)
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err.Error(),
@@ -136,7 +135,7 @@ func AddToFavourites(c *fiber.Ctx) error {
 
 	params.UserID = userId
 
-	note, err := connections.DBConnection.DB.AddToFavourites(c.Context(), *params)
+	note, err := db.DBConnection.DB.AddToFavourites(c.Context(), *params)
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err.Error(),
@@ -161,7 +160,7 @@ func RemoveFromFavourite(c *fiber.Ctx) error {
 
 	params.UserID = userId
 
-	note, err := connections.DBConnection.DB.RemoveFromFavourites(c.Context(), *params)
+	note, err := db.DBConnection.DB.RemoveFromFavourites(c.Context(), *params)
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err.Error(),
@@ -177,7 +176,7 @@ func ListFavourites(c *fiber.Ctx) error {
 
 	userId := helpers.RecoverToken(c)
 
-	notes, err := connections.DBConnection.DB.ListFavourites(c.Context(), userId)
+	notes, err := db.DBConnection.DB.ListFavourites(c.Context(), userId)
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"notes": err.Error(),

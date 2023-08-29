@@ -8,7 +8,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	_ "github.com/lib/pq"
-	"github.com/multi-user-notes-app/connections"
+	"github.com/multi-user-notes-app/db"
 	handler "github.com/multi-user-notes-app/handlers"
 	"github.com/multi-user-notes-app/helpers"
 )
@@ -22,7 +22,7 @@ func main() {
 		SigningKey: jwtware.SigningKey{Key: []byte(os.Getenv("JWT_SECRET_KEY"))},
 	}))
 
-	err := connections.OpenDBConnection()
+	err := db.OpenDBConnection()
 	if err != nil {
 		log.Fatal("ERROR CONNECTING TO DB")
 	}

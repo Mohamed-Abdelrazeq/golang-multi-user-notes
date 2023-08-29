@@ -2,7 +2,6 @@ package handler
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/multi-user-notes-app/connections"
 	"github.com/multi-user-notes-app/db"
 	"github.com/multi-user-notes-app/helpers"
 )
@@ -21,7 +20,7 @@ func AuthenticateUser(c *fiber.Ctx) error {
 		})
 	}
 
-	user, err := connections.DBConnection.DB.GetUserByEmail(c.Context(), authenticateUserParams.Email)
+	user, err := db.DBConnection.DB.GetUserByEmail(c.Context(), authenticateUserParams.Email)
 	if err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(&fiber.Map{
 			"message": "Invalid email",
@@ -66,7 +65,7 @@ func CreateUser(c *fiber.Ctx) error {
 	createUserParams.Password = password
 
 	// ADD TO DB
-	user, err := connections.DBConnection.DB.CreateUser(c.Context(), *createUserParams)
+	user, err := db.DBConnection.DB.CreateUser(c.Context(), *createUserParams)
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err.Error(),

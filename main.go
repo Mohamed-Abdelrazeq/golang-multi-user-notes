@@ -28,21 +28,25 @@ func main() {
 	}
 
 	app.Route("/authenticate", func(router fiber.Router) {
-		router.Post("/authenticate-user", handler.AuthenticateUser)
-		router.Post("/create-user", handler.CreateUser)
+		router.Post("/login", handler.Login)
+		router.Post("/register", handler.Register)
 	})
 
 	app.Route("/api", func(router fiber.Router) {
-		// NOTES
-		router.Get("/notes/favourites", handler.ListFavourites)
-		router.Get("/notes/:id", handler.GetNoteById)
-		router.Delete("/notes/:id", handler.DeleteNote)
-		router.Post("/notes", handler.CreateNote)
-		router.Patch("/notes", handler.UpdateNote)
-		router.Get("/notes", handler.GetAllNotes)
-		router.Put("/notes/add-to-favourites/:id", handler.AddToFavourites)
-		router.Put("/notes/remove-to-favourites/:id", handler.RemoveFromFavourite)
-		// HEALTH
+		router.Route("/user", func(router fiber.Router) {
+			router.Delete("/", handler.DeleteUserById)
+		})
+		router.Route("/notes", func(router fiber.Router) {
+			router.Get("/favourites", handler.ListFavourites)
+			router.Get("/:id", handler.GetNoteById)
+			router.Delete("/:id", handler.DeleteNote)
+			router.Post("/", handler.CreateNote)
+			router.Patch("/", handler.UpdateNote)
+			router.Get("/", handler.GetAllNotes)
+			router.Put("/add-to-favourites/:id", handler.AddToFavourites)
+			router.Put("/remove-to-favourites/:id", handler.RemoveFromFavourite)
+		})
+
 		router.Get("/health", handler.CheckHealth)
 	})
 

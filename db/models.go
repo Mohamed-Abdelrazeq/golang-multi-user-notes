@@ -15,6 +15,7 @@ type Note struct {
 	UserID      int32     `json:"user_id"`
 	IsFavourite bool      `json:"is_favourite"`
 	CreatedAt   time.Time `json:"created_at"`
+	ImageUrl    string    `json:"image_url"`
 }
 
 type User struct {

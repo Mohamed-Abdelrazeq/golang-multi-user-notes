@@ -1,4 +1,4 @@
 vendor
-.env
+.*
 go.sum
 multi-user-notes-app

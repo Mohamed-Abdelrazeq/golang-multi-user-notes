@@ -13,7 +13,7 @@ const addToFavourites = `-- name: AddToFavourites :one
 UPDATE notes
 set is_favourite = true
 WHERE  user_id = $1 AND id = $2
-RETURNING id, title, content, user_id, is_favourite, created_at
+RETURNING id, title, content, user_id, is_favourite, created_at, image_url
 `
 
 type AddToFavouritesParams struct {
@@ -31,12 +31,13 @@ func (q *Queries) AddToFavourites(ctx context.Context, arg AddToFavouritesParams
 		&i.UserID,
 		&i.IsFavourite,
 		&i.CreatedAt,
+		&i.ImageUrl,
 	)
 	return i, err
 }
 
 const createNote = `-- name: CreateNote :one
-INSERT INTO notes (user_id, title, content) VALUES ($1, $2, $3) RETURNING id, title, content, user_id, is_favourite, created_at
+INSERT INTO notes (user_id, title, content) VALUES ($1, $2, $3) RETURNING id, title, content, user_id, is_favourite, created_at, image_url
 `
 
 type CreateNoteParams struct {
@@ -55,6 +56,7 @@ func (q *Queries) CreateNote(ctx context.Context, arg CreateNoteParams) (Note, e
 		&i.UserID,
 		&i.IsFavourite,
 		&i.CreatedAt,
+		&i.ImageUrl,
 	)
 	return i, err
 }
@@ -74,7 +76,7 @@ func (q *Queries) DeleteNote(ctx context.Context, arg DeleteNoteParams) error {
 }
 
 const getAllNotes = `-- name: GetAllNotes :many
-SELECT id, title, content, user_id, is_favourite, created_at FROM notes WHERE user_id = $1
+SELECT id, title, content, user_id, is_favourite, created_at, image_url FROM notes WHERE user_id = $1
 `
 
 func (q *Queries) GetAllNotes(ctx context.Context, userID int32) ([]Note, error) {
@@ -93,6 +95,7 @@ func (q *Queries) GetAllNotes(ctx context.Context, userID int32) ([]Note, error)
 			&i.UserID,
 			&i.IsFavourite,
 			&i.CreatedAt,
+			&i.ImageUrl,
 		); err != nil {
 			return nil, err
 		}
@@ -108,7 +111,7 @@ func (q *Queries) GetAllNotes(ctx context.Context, userID int32) ([]Note, error)
 }
 
 const getNoteById = `-- name: GetNoteById :one
-SELECT id, title, content, user_id, is_favourite, created_at FROM notes WHERE user_id = $1 AND id = $2
+SELECT id, title, content, user_id, is_favourite, created_at, image_url FROM notes WHERE user_id = $1 AND id = $2
 `
 
 type GetNoteByIdParams struct {
@@ -126,12 +129,13 @@ func (q *Queries) GetNoteById(ctx context.Context, arg GetNoteByIdParams) (Note,
 		&i.UserID,
 		&i.IsFavourite,
 		&i.CreatedAt,
+		&i.ImageUrl,
 	)
 	return i, err
 }
 
 const listFavourites = `-- name: ListFavourites :many
-SELECT id, title, content, user_id, is_favourite, created_at FROM notes WHERE user_id = $1 AND is_favourite = true
+SELECT id, title, content, user_id, is_favourite, created_at, image_url FROM notes WHERE user_id = $1 AND is_favourite = true
 `
 
 func (q *Queries) ListFavourites(ctx context.Context, userID int32) ([]Note, error) {
@@ -150,6 +154,7 @@ func (q *Queries) ListFavourites(ctx context.Context, userID int32) ([]Note, err
 			&i.UserID,
 			&i.IsFavourite,
 			&i.CreatedAt,
+			&i.ImageUrl,
 		); err != nil {
 			return nil, err
 		}
@@ -168,7 +173,7 @@ const removeFromFavourites = `-- name: RemoveFromFavourites :one
 UPDATE notes
 set is_favourite = false
 WHERE  user_id = $1 AND id = $2
-RETURNING id, title, content, user_id, is_favourite, created_at
+RETURNING id, title, content, user_id, is_favourite, created_at, image_url
 `
 
 type RemoveFromFavouritesParams struct {
@@ -186,6 +191,7 @@ func (q *Queries) RemoveFromFavourites(ctx context.Context, arg RemoveFromFavour
 		&i.UserID,
 		&i.IsFavourite,
 		&i.CreatedAt,
+		&i.ImageUrl,
 	)
 	return i, err
 }
@@ -194,7 +200,7 @@ const updateNote = `-- name: UpdateNote :one
 UPDATE notes 
 SET title = $3, content = $4
 WHERE  user_id = $1 AND id = $2
-RETURNING id, title, content, user_id, is_favourite, created_at
+RETURNING id, title, content, user_id, is_favourite, created_at, image_url
 `
 
 type UpdateNoteParams struct {
@@ -219,6 +225,7 @@ func (q *Queries) UpdateNote(ctx context.Context, arg UpdateNoteParams) (Note, e
 		&i.UserID,
 		&i.IsFavourite,
 		&i.CreatedAt,
+		&i.ImageUrl,
 	)
 	return i, err
 }

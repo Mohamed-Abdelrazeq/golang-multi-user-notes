@@ -37,9 +37,9 @@ func main() {
 		router.Route("/notes", func(router fiber.Router) {
 			router.Get("/favourites", handler.ListFavourites)
 			router.Get("/:id", handler.GetNoteById)
-			router.Delete("/:id", handler.DeleteNote)
+			router.Delete("/:id", handler.DeleteNoteById)
+			router.Patch("/", handler.UpdateNoteById)
 			router.Post("/", handler.CreateNote)
-			router.Patch("/", handler.UpdateNote)
 			router.Get("/", handler.GetAllNotes)
 			router.Put("/add-to-favourites/:id", handler.AddToFavourites)
 			router.Put("/remove-to-favourites/:id", handler.RemoveFromFavourite)

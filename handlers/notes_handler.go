@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"fmt"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/multi-user-notes-app/db/internals"
 	"github.com/multi-user-notes-app/db/models"
@@ -60,7 +62,7 @@ func CreateNote(c *fiber.Ctx) error {
 	})
 }
 
-func DeleteNote(c *fiber.Ctx) error {
+func DeleteNoteById(c *fiber.Ctx) error {
 
 	userId := helpers.RecoverToken(c)
 	params := new(models.NoteDetailsParams)
@@ -128,20 +130,35 @@ func GetNoteById(c *fiber.Ctx) error {
 	})
 }
 
-func UpdateNote(c *fiber.Ctx) error {
+func UpdateNoteById(c *fiber.Ctx) error {
 
 	userId := helpers.RecoverToken(c)
-	params := new(internals.UpdateNoteParams)
+	body := new(models.UpdateNoteParams)
 
-	if err := c.BodyParser(params); err != nil {
+	if err := c.BodyParser(body); err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err.Error(),
 		})
 	}
 
-	params.UserID = userId
+	fmt.Println(body)
 
-	note, err := internals.DBConnection.DB.UpdateNote(c.Context(), *params)
+	if err := helpers.Validator.Struct(body); err != nil {
+		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
+			"message": err.Error(),
+		})
+	}
+
+	dbParams := internals.UpdateNoteParams{
+		UserID:      userId,
+		ID:          body.ID,
+		Title:       body.Title,
+		Content:     body.Content,
+		ImageUrl:    body.ImageUrl,
+		IsFavourite: body.IsFavourite,
+	}
+
+	note, err := internals.DBConnection.DB.UpdateNote(c.Context(), dbParams)
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err.Error(),

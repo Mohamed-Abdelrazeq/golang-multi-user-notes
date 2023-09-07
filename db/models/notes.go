@@ -1,6 +1,6 @@
 package models
 
-type NoteParams struct {
+type CreateNoteParams struct {
 	Title       string `json:"title" validate:"required,min=1,max=255"`
 	Content     string `json:"content" validate:"required,min=1,max=65535"`
 	ImageUrl    string `json:"image_url"`
@@ -9,4 +9,9 @@ type NoteParams struct {
 
 type NoteDetailsParams struct {
 	ID int32 `json:"id" validate:"required"`
+}
+
+type UpdateNoteParams struct {
+	NoteDetailsParams
+	CreateNoteParams
 }

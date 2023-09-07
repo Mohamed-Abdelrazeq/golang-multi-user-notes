@@ -206,16 +206,18 @@ func (q *Queries) RemoveFromFavourites(ctx context.Context, arg RemoveFromFavour
 
 const updateNote = `-- name: UpdateNote :one
 UPDATE notes 
-SET title = $3, content = $4
+SET title = $3, content = $4, is_favourite = $5, image_url = $6
 WHERE  user_id = $1 AND id = $2
 RETURNING id, title, content, user_id, is_favourite, created_at, image_url
 `
 
 type UpdateNoteParams struct {
-	UserID  int32  `json:"user_id"`
-	ID      int32  `json:"id"`
-	Title   string `json:"title"`
-	Content string `json:"content"`
+	UserID      int32  `json:"user_id"`
+	ID          int32  `json:"id"`
+	Title       string `json:"title"`
+	Content     string `json:"content"`
+	IsFavourite bool   `json:"is_favourite"`
+	ImageUrl    string `json:"image_url"`
 }
 
 func (q *Queries) UpdateNote(ctx context.Context, arg UpdateNoteParams) (Note, error) {
@@ -224,6 +226,8 @@ func (q *Queries) UpdateNote(ctx context.Context, arg UpdateNoteParams) (Note, e
 		arg.ID,
 		arg.Title,
 		arg.Content,
+		arg.IsFavourite,
+		arg.ImageUrl,
 	)
 	var i Note
 	err := row.Scan(

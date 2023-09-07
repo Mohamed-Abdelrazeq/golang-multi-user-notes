@@ -12,7 +12,7 @@ DELETE FROM notes WHERE user_id = $1 AND id = $2;
 
 -- name: UpdateNote :one
 UPDATE notes 
-SET title = $3, content = $4
+SET title = $3, content = $4, is_favourite = $5, image_url = $6
 WHERE  user_id = $1 AND id = $2
 RETURNING *;
 

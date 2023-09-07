@@ -1,11 +1,11 @@
 version: "2"
 sql:
   - engine: "postgresql"
-    queries: "./queries"
-    schema: "./schema"
+    queries: "./db/queries"
+    schema: "./db/schema"
     gen:
       go:
-        out: "./db"
+        out: "./db/internals"
         json_tags_case_style: snake
         emit_json_tags: true
 

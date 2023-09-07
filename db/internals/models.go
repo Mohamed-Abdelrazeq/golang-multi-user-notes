@@ -2,7 +2,7 @@
 // versions:
 //   sqlc v1.20.0
 
-package db
+package internals
 
 import (
 	"time"

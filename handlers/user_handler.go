@@ -2,12 +2,12 @@ package handler
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/multi-user-notes-app/db"
+	"github.com/multi-user-notes-app/db/internals"
 )
 
 // TODO: HARD CODED FOR NOW
 func DeleteUserById(c *fiber.Ctx) error {
-	err := db.DBConnection.DB.DeleteUserById(c.Context(), 1)
+	err := internals.DBConnection.DB.DeleteUserById(c.Context(), 1)
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err.Error(),

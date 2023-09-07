@@ -1,5 +1,5 @@
 -- name: CreateNote :one
-INSERT INTO notes (user_id, title, content) VALUES ($1, $2, $3) RETURNING *;
+INSERT INTO notes (user_id, title, content, is_favourite, image_url) VALUES ($1, $2, $3, $4, $5) RETURNING *;
 
 -- name: GetAllNotes :many
 SELECT * FROM notes WHERE user_id = $1;

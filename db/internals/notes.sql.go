@@ -37,17 +37,25 @@ func (q *Queries) AddToFavourites(ctx context.Context, arg AddToFavouritesParams
 }
 
 const createNote = `-- name: CreateNote :one
-INSERT INTO notes (user_id, title, content) VALUES ($1, $2, $3) RETURNING id, title, content, user_id, is_favourite, created_at, image_url
+INSERT INTO notes (user_id, title, content, is_favourite, image_url) VALUES ($1, $2, $3, $4, $5) RETURNING id, title, content, user_id, is_favourite, created_at, image_url
 `
 
 type CreateNoteParams struct {
-	UserID  int32  `json:"user_id"`
-	Title   string `json:"title"`
-	Content string `json:"content"`
+	UserID      int32  `json:"user_id"`
+	Title       string `json:"title"`
+	Content     string `json:"content"`
+	IsFavourite bool   `json:"is_favourite"`
+	ImageUrl    string `json:"image_url"`
 }
 
 func (q *Queries) CreateNote(ctx context.Context, arg CreateNoteParams) (Note, error) {
-	row := q.db.QueryRowContext(ctx, createNote, arg.UserID, arg.Title, arg.Content)
+	row := q.db.QueryRowContext(ctx, createNote,
+		arg.UserID,
+		arg.Title,
+		arg.Content,
+		arg.IsFavourite,
+		arg.ImageUrl,
+	)
 	var i Note
 	err := row.Scan(
 		&i.ID,

@@ -33,12 +33,24 @@ func CreateNote(c *fiber.Ctx) error {
 		})
 	}
 
-	params.UserID = userId
+	if err := helpers.Validator.Struct(params); err != nil {
+		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
+			"message": err.Error(),
+		})
+	}
 
-	note, err := internals.DBConnection.DB.CreateNote(c.Context(), *params)
+	dbParams := internals.CreateNoteParams{
+		UserID:      userId,
+		Title:       params.Title,
+		Content:     params.Content,
+		ImageUrl:    params.ImageUrl,
+		IsFavourite: params.IsFavourite,
+	}
+
+	note, err := internals.DBConnection.DB.CreateNote(c.Context(), dbParams)
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
-			"message": params,
+			"message": err.Error(),
 		})
 	}
 

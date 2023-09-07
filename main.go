@@ -15,17 +15,15 @@ import (
 
 func main() {
 	app := fiber.New()
-	helpers.LoadEnv()
+
+	helpers.InitEnv()
+	helpers.InitValidator()
+	internals.InitDB()
 
 	app.Use(logger.New())
 	app.Use("/api", jwtware.New(jwtware.Config{
 		SigningKey: jwtware.SigningKey{Key: []byte(os.Getenv("JWT_SECRET_KEY"))},
 	}))
-
-	err := internals.OpenDBConnection()
-	if err != nil {
-		log.Fatal("ERROR CONNECTING TO DB")
-	}
 
 	app.Route("/authenticate", func(router fiber.Router) {
 		router.Post("/login", handler.Login)

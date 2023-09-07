@@ -2,6 +2,7 @@ package internals
 
 import (
 	"database/sql"
+	"log"
 	"os"
 )
 
@@ -11,16 +12,14 @@ type apiConfig struct {
 
 var DBConnection apiConfig
 
-func OpenDBConnection() error {
+func InitDB() {
 	db, err := sql.Open(os.Getenv("DRIVER"), os.Getenv("DB"))
 	if err != nil {
-		return err
+		log.Fatal(err.Error())
 	}
 	dbQueries := New(db)
 
 	DBConnection = apiConfig{
 		DB: dbQueries,
 	}
-
-	return nil
 }

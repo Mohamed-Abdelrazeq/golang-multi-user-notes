@@ -3,6 +3,7 @@ package handler
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/multi-user-notes-app/db/internals"
+	"github.com/multi-user-notes-app/db/models"
 	"github.com/multi-user-notes-app/helpers"
 )
 
@@ -62,7 +63,7 @@ func CreateNote(c *fiber.Ctx) error {
 func DeleteNote(c *fiber.Ctx) error {
 
 	userId := helpers.RecoverToken(c)
-	params := new(internals.DeleteNoteParams)
+	params := new(models.NoteDetailsParams)
 
 	if err := c.ParamsParser(params); err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
@@ -70,9 +71,18 @@ func DeleteNote(c *fiber.Ctx) error {
 		})
 	}
 
-	params.UserID = userId
+	if err := helpers.Validator.Struct(params); err != nil {
+		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
+			"message": err.Error(),
+		})
+	}
 
-	err := internals.DBConnection.DB.DeleteNote(c.Context(), *params)
+	dbParams := internals.DeleteNoteParams{
+		ID:     params.ID,
+		UserID: userId,
+	}
+
+	err := internals.DBConnection.DB.DeleteNote(c.Context(), dbParams)
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err.Error(),
@@ -87,7 +97,7 @@ func DeleteNote(c *fiber.Ctx) error {
 func GetNoteById(c *fiber.Ctx) error {
 
 	userId := helpers.RecoverToken(c)
-	params := new(internals.GetNoteByIdParams)
+	params := new(models.NoteDetailsParams)
 
 	if err := c.ParamsParser(params); err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
@@ -95,9 +105,18 @@ func GetNoteById(c *fiber.Ctx) error {
 		})
 	}
 
-	params.UserID = userId
+	if err := helpers.Validator.Struct(params); err != nil {
+		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
+			"message": err.Error(),
+		})
+	}
 
-	note, err := internals.DBConnection.DB.GetNoteById(c.Context(), *params)
+	dbParams := internals.GetNoteByIdParams{
+		ID:     params.ID,
+		UserID: userId,
+	}
+
+	note, err := internals.DBConnection.DB.GetNoteById(c.Context(), dbParams)
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err.Error(),

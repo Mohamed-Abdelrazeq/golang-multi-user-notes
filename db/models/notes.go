@@ -6,3 +6,7 @@ type NoteParams struct {
 	ImageUrl    string `json:"image_url"`
 	IsFavourite bool   `json:"is_favourite"`
 }
+
+type NoteDetailsParams struct {
+	ID int32 `json:"id" validate:"required"`
+}

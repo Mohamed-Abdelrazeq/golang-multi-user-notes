@@ -7,7 +7,7 @@ import (
 
 // TODO: HARD CODED FOR NOW
 func DeleteUserById(c *fiber.Ctx) error {
-	err := internals.DBConnection.DB.DeleteUserById(c.Context(), 1)
+	err := internals.DBConnection.DB.DeleteUserById(c.Context(), 2)
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err.Error(),

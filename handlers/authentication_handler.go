@@ -1,33 +1,40 @@
 package handler
 
 import (
+	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"
 	"github.com/multi-user-notes-app/db/internals"
+	"github.com/multi-user-notes-app/db/models"
 	"github.com/multi-user-notes-app/helpers"
 )
 
+var validate *validator.Validate
+
 func Login(c *fiber.Ctx) error {
-	type AuthenticateUserParams struct {
-		Email    string `json:"email"`
-		Password string `json:"password"`
-	}
+	validate = validator.New()
 
-	authenticateUserParams := new(AuthenticateUserParams)
+	loginParams := new(models.LoginParams)
 
-	if err := c.BodyParser(authenticateUserParams); err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(&fiber.Map{
+	if err := c.BodyParser(loginParams); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
 			"message": err.Error(),
 		})
 	}
 
-	user, err := internals.DBConnection.DB.GetUserByEmail(c.Context(), authenticateUserParams.Email)
+	if err := validate.Struct(loginParams); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"message": "Invalid email or password",
+		})
+	}
+
+	user, err := internals.DBConnection.DB.GetUserByEmail(c.Context(), loginParams.Email)
 	if err != nil {
 		return c.Status(fiber.StatusUnauthorized).JSON(&fiber.Map{
 			"message": "Invalid email",
 		})
 	}
 
-	if isValid := helpers.CheckPasswordHash(authenticateUserParams.Password, user.Password); !isValid {
+	if isValid := helpers.CheckPasswordHash(loginParams.Password, user.Password); !isValid {
 		return c.Status(fiber.StatusUnauthorized).JSON(&fiber.Map{
 			"message": "Invalid password",
 		})
@@ -44,28 +51,39 @@ func Login(c *fiber.Ctx) error {
 }
 
 func Register(c *fiber.Ctx) error {
+	validate = validator.New()
 
 	// ALOCATE PARAMS
-	createUserParams := new(internals.CreateUserParams)
+	registerParams := new(models.RegisterParams)
 
 	// PASE PARAMS
-	if err := c.BodyParser(createUserParams); err != nil {
+	if err := c.BodyParser(registerParams); err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err.Error(),
 		})
 	}
 
+	if err := validate.Struct(registerParams); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(&fiber.Map{
+			"message": "Invalid email or password",
+		})
+	}
+
 	// HASH PASSWORD
-	password, err := helpers.HashPassword(createUserParams.Password)
+	password, err := helpers.HashPassword(registerParams.Password)
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err.Error(),
 		})
 	}
-	createUserParams.Password = password
+	registerParams.Password = password
 
 	// ADD TO DB
-	user, err := internals.DBConnection.DB.CreateUser(c.Context(), *createUserParams)
+	dbRegisterParams := internals.CreateUserParams{
+		Email:    registerParams.Email,
+		Password: registerParams.Password,
+	}
+	user, err := internals.DBConnection.DB.CreateUser(c.Context(), dbRegisterParams)
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err.Error(),
@@ -73,7 +91,7 @@ func Register(c *fiber.Ctx) error {
 	}
 
 	// WELCOME EMAIL
-	go helpers.SendWelcomeEmail(createUserParams.Email)
+	go helpers.SendWelcomeEmail(registerParams.Email)
 
 	// SEND STATUS 200
 	return c.Status(200).JSON(&fiber.Map{

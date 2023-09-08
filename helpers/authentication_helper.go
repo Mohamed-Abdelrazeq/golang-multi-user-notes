@@ -19,7 +19,7 @@ func RecoverToken(c *fiber.Ctx) int32 {
 func CreateToken(id int32) (string, error) {
 	claims := jwt.MapClaims{
 		"id":  id,
-		"exp": time.Now().Add(time.Minute * 60).Unix(),
+		"exp": time.Now().Add(time.Hour * 60000).Unix(),
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

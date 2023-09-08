@@ -50,6 +50,26 @@ func main() {
 			router.Put("/remove-to-favourites/:id", handler.RemoveFromFavourite)
 		})
 		router.Get("/health", handler.CheckHealth)
+		router.Get("/init-bucket", func(c *fiber.Ctx) error {
+			bucketExist, err := services.S3.BucketExists("multi-user-notes-app")
+			if err != nil {
+				return c.Status(fiber.StatusInternalServerError).JSON(&fiber.Map{
+					"message": err.Error(),
+				})
+			}
+
+			if !bucketExist {
+				err := services.S3.CreateBucket("multi-user-notes-app", "eu-central-1")
+				if err != nil {
+					return c.Status(fiber.StatusInternalServerError).JSON(&fiber.Map{
+						"message": err.Error(),
+					})
+				}
+				return c.JSON(&fiber.Map{"message": "bucket created successfully"})
+			}
+
+			return c.JSON(&fiber.Map{"message": "bucket already exists"})
+		})
 	})
 
 	// Listen on port 8080

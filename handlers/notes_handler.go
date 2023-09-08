@@ -170,6 +170,7 @@ func UpdateNoteById(c *fiber.Ctx) error {
 	})
 }
 
+// NEXT 3 FUNCTIONS ARE FOR FAVOURITES ( VALIDATION IS NEEDED )
 func AddToFavourites(c *fiber.Ctx) error {
 
 	userId := helpers.RecoverToken(c)

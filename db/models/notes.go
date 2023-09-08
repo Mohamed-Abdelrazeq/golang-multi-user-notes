@@ -15,3 +15,7 @@ type UpdateNoteParams struct {
 	NoteDetailsParams
 	CreateNoteParams
 }
+
+type UpdateFavouriteParams struct {
+	NoteDetailsParams
+}

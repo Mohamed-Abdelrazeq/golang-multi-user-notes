@@ -170,11 +170,10 @@ func UpdateNoteById(c *fiber.Ctx) error {
 	})
 }
 
-// NEXT 3 FUNCTIONS ARE FOR FAVOURITES ( VALIDATION IS NEEDED )
 func AddToFavourites(c *fiber.Ctx) error {
 
 	userId := helpers.RecoverToken(c)
-	params := new(internals.AddToFavouritesParams)
+	params := new(models.NoteDetailsParams)
 
 	if err := c.ParamsParser(params); err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
@@ -182,9 +181,18 @@ func AddToFavourites(c *fiber.Ctx) error {
 		})
 	}
 
-	params.UserID = userId
+	if err := helpers.Validator.Struct(params); err != nil {
+		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
+			"message": err.Error(),
+		})
+	}
 
-	note, err := internals.DBConnection.DB.AddToFavourites(c.Context(), *params)
+	dbParams := internals.AddToFavouritesParams{
+		UserID: userId,
+		ID:     params.ID,
+	}
+
+	note, err := internals.DBConnection.DB.AddToFavourites(c.Context(), dbParams)
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err.Error(),
@@ -199,7 +207,7 @@ func AddToFavourites(c *fiber.Ctx) error {
 func RemoveFromFavourite(c *fiber.Ctx) error {
 
 	userId := helpers.RecoverToken(c)
-	params := new(internals.RemoveFromFavouritesParams)
+	params := new(models.NoteDetailsParams)
 
 	if err := c.ParamsParser(params); err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
@@ -207,9 +215,18 @@ func RemoveFromFavourite(c *fiber.Ctx) error {
 		})
 	}
 
-	params.UserID = userId
+	if err := helpers.Validator.Struct(params); err != nil {
+		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
+			"message": err.Error(),
+		})
+	}
 
-	note, err := internals.DBConnection.DB.RemoveFromFavourites(c.Context(), *params)
+	dbParams := internals.RemoveFromFavouritesParams{
+		ID:     params.ID,
+		UserID: userId,
+	}
+
+	note, err := internals.DBConnection.DB.RemoveFromFavourites(c.Context(), dbParams)
 	if err != nil {
 		return c.Status(fiber.StatusNotAcceptable).JSON(&fiber.Map{
 			"message": err.Error(),

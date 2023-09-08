@@ -5,6 +5,7 @@ import (
 	"github.com/multi-user-notes-app/db/internals"
 	"github.com/multi-user-notes-app/db/models"
 	"github.com/multi-user-notes-app/helpers"
+	"github.com/multi-user-notes-app/services"
 )
 
 func Login(c *fiber.Ctx) error {
@@ -85,7 +86,7 @@ func Register(c *fiber.Ctx) error {
 	}
 
 	// WELCOME EMAIL
-	go helpers.SendWelcomeEmail(registerParams.Email)
+	go services.SendWelcomeEmail(registerParams.Email)
 
 	// SEND STATUS 200
 	return c.Status(200).JSON(&fiber.Map{

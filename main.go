@@ -11,6 +11,7 @@ import (
 	"github.com/multi-user-notes-app/db/internals"
 	handler "github.com/multi-user-notes-app/handlers"
 	"github.com/multi-user-notes-app/helpers"
+	"github.com/multi-user-notes-app/services"
 )
 
 func main() {
@@ -19,6 +20,7 @@ func main() {
 	helpers.InitEnv()
 	helpers.InitValidator()
 	internals.InitDB()
+	services.InitS3()
 
 	// Logger Middleware
 	app.Use(logger.New())

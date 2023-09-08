@@ -14,22 +14,25 @@ import (
 )
 
 func main() {
+	// Init Fiber app & .Env & Validator & DB
 	app := fiber.New()
-
 	helpers.InitEnv()
 	helpers.InitValidator()
 	internals.InitDB()
 
+	// Logger Middleware
 	app.Use(logger.New())
+
+	// JWT Middleware
 	app.Use("/api", jwtware.New(jwtware.Config{
 		SigningKey: jwtware.SigningKey{Key: []byte(os.Getenv("JWT_SECRET_KEY"))},
 	}))
 
+	// Routes
 	app.Route("/authenticate", func(router fiber.Router) {
 		router.Post("/login", handler.Login)
 		router.Post("/register", handler.Register)
 	})
-
 	app.Route("/api", func(router fiber.Router) {
 		router.Route("/user", func(router fiber.Router) {
 			router.Delete("/", handler.DeleteUserById)
@@ -44,9 +47,9 @@ func main() {
 			router.Put("/add-to-favourites/:id", handler.AddToFavourites)
 			router.Put("/remove-to-favourites/:id", handler.RemoveFromFavourite)
 		})
-
 		router.Get("/health", handler.CheckHealth)
 	})
 
+	// Listen on port 8080
 	log.Fatal(app.Listen(os.Getenv("HOST") + ":" + os.Getenv("PORT")))
 }
